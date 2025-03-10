@@ -25,17 +25,17 @@ namespace AvatarDinamicoPersonalizado.Controllers
             return View();
         }
 
-        private void GuardarSesion(UsuarioLogin usuario)
+        private void GuardarSesion(UsuarioCompletoViewModel usuario)
         {
-            // Guardar todos los datos del usuario en la sesión
             HttpContext.Session.SetString("NombreUsuario", usuario.Nombre);
-            HttpContext.Session.SetString("CorreoUsuario", usuario.Correo);
+            HttpContext.Session.SetString("CorreoUsuario", usuario.CorreoLogin);
             HttpContext.Session.SetString("ClaveUsuario", usuario.Clave);
             HttpContext.Session.SetString("ConfirmarClaveUsuario", usuario.ConfirmarClave);
             HttpContext.Session.SetString("PreferenciaViajeUsuario", usuario.PreferenciaViaje);
             HttpContext.Session.SetString("AvatarUrlUsuario", usuario.AvatarUrl);
             HttpContext.Session.SetInt32("IdUsuario", usuario.IdUsuario);
-
+            HttpContext.Session.SetInt32("EdadUsuario", usuario.Edad);
+            HttpContext.Session.SetString("NacionalidadUsuario", usuario.Nacionalidad);
         }
 
         public IActionResult Login()
@@ -46,42 +46,40 @@ namespace AvatarDinamicoPersonalizado.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(Login login)
         {
-                try
+            try
+            {
+                if (!string.IsNullOrEmpty(login.Clave))
                 {
-                    
-                    if (!string.IsNullOrEmpty(login.Clave))
-                    {
-                        var usuario = await this.context.UsuariosLogin.FirstOrDefaultAsync(u => u.Correo == login.Email && u.Clave == login.Clave);
+                    var usuario = await context.UsuarioCompletoViewModels.FirstOrDefaultAsync(u => u.CorreoLogin == login.Email && u.Clave == login.Clave);
 
-                        if (usuario != null)
+                    if (usuario != null)
+                    {
+                        if (usuario.IdUsuario != 0)
                         {
-                            
-                            if (usuario.IdUsuario != 0) 
-                            {
-                                GuardarSesion(usuario);
-                                return RedirectToAction("Perfil", new { id = usuario.IdUsuario });
-                            }
-                            else
-                            {
-                                ViewBag.Error = "IdUsuario no encontrado en la base de datos.";
-                            }
+                            GuardarSesion(usuario);
+                            return RedirectToAction("Perfil", new { id = usuario.IdUsuario });
                         }
                         else
                         {
-                            ViewBag.Error = "Correo o contraseña incorrectos.";
+                            ViewBag.Error = "IdUsuario no encontrado en la base de datos.";
                         }
                     }
                     else
                     {
-                        ViewBag.Error = "La contraseña no puede estar vacía.";
+                        ViewBag.Error = "Correo o contraseña incorrectos.";
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    ViewBag.Error = "Ocurrió un error durante el inicio de sesión: " + ex.Message;
-                    Console.WriteLine(ex.ToString());
+                    ViewBag.Error = "La contraseña no puede estar vacía.";
                 }
-            
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Ocurrió un error durante el inicio de sesión: " + ex.Message;
+                Console.WriteLine(ex.ToString());
+            }
+
             return View(login);
         }
 
@@ -160,7 +158,7 @@ namespace AvatarDinamicoPersonalizado.Controllers
 
                 try
                 {
-                    await this.context.Database.ExecuteSqlRawAsync("EXEC SP_INSERT_USER @nombre, @correo, @clave, @confirmarclave, @preferenciasdeviaje, @coloravatar, @avatarurl",
+                    await context.Database.ExecuteSqlRawAsync("EXEC SP_INSERT_USER @nombre, @correo, @clave, @confirmarclave, @preferenciasdeviaje, @coloravatar, @avatarurl",
                         new SqlParameter("@nombre", usuario.Nombre),
                         new SqlParameter("@correo", usuario.Correo),
                         new SqlParameter("@clave", usuario.Clave),
@@ -172,10 +170,10 @@ namespace AvatarDinamicoPersonalizado.Controllers
                 catch (Exception ex)
                 {
                     ViewBag.Error = "Ocurrió un error al crear la cuenta: " + ex.Message;
-                    return View(usuario); 
+                    return View(usuario);
                 }
 
-                var usuarioCreado = await this.context.UsuariosLogin.FirstOrDefaultAsync(u => u.Correo == usuario.Correo);
+                var usuarioCreado = await context.UsuarioCompletoViewModels.FirstOrDefaultAsync(u => u.CorreoLogin == usuario.Correo);
 
                 if (usuarioCreado == null)
                 {
@@ -188,6 +186,7 @@ namespace AvatarDinamicoPersonalizado.Controllers
             }
             return View(usuario);
         }
+
 
         public async Task<IActionResult> Perfil(int id)
         {
@@ -269,26 +268,27 @@ namespace AvatarDinamicoPersonalizado.Controllers
 
         public async Task<IActionResult> EditarPerfil(int idUsuario)
         {
-            var usuario = await context.UsuariosLogin.FindAsync(idUsuario);  
+            var usuario = await context.UsuarioCompletoViewModels.FindAsync(idUsuario);  
             return View(usuario);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditarPerfil(UsuarioLogin usuario)
+        public async Task<IActionResult> EditarPerfil(UsuarioCompletoViewModel usuario)
         {
-            if (ModelState.IsValid)
-            {
+
                 try
                 {
                     await repo.UpdatePerfilAsync(
                         usuario.IdUsuario,
                         usuario.Nombre,
-                        usuario.Correo,
+                        usuario.CorreoLogin,
                         usuario.Clave,
                         usuario.ConfirmarClave,
                         usuario.PreferenciaViaje,
                         usuario.ColorAvatar,
-                        usuario.AvatarUrl
+                        usuario.AvatarUrl,
+                        usuario.Edad,
+                        usuario.Nacionalidad
                     );
 
                     GuardarSesion(usuario);
@@ -300,8 +300,7 @@ namespace AvatarDinamicoPersonalizado.Controllers
                     ViewBag.Error = "Ocurrió un error al actualizar el perfil: " + ex.Message;
                     return View(usuario);
                 }
-            }
-            return View(usuario);
+            
         }
 
         [HttpPost]

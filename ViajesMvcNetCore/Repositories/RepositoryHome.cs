@@ -47,9 +47,9 @@ namespace ViajesMvcNetCore.Repositories
             await context.Database.ExecuteSqlRawAsync(sql, new SqlParameter("@idlugar", idLugar));
         }
 
-        public async Task UpdatePerfilAsync(int idUsuario, string nombre, string correo, string clave, string confirmarClave, string preferenciaViaje, string colorAvatar, string avatarUrl)
+        public async Task UpdatePerfilAsync(int idUsuario, string nombre, string correo, string clave, string confirmarClave, string preferenciaViaje, string colorAvatar, string avatarUrl, int edad, string nacionalidad)
         {
-            string sql = "EXEC SP_UPDATE_PERFIL @id_usuario, @nombre, @correo, @clave, @confirmarclave, @preferenciaviaje, @coloravatar, @avatarurl";
+            string sql = "EXEC SP_UPDATE_PERFIL @id_usuario, @nombre, @correo, @clave, @confirmarclave, @preferenciaviaje, @coloravatar, @avatarurl, @edad, @nacionalidad";
             await context.Database.ExecuteSqlRawAsync(sql,
                 new SqlParameter("@id_usuario", idUsuario),
                 new SqlParameter("@nombre", nombre),
@@ -58,7 +58,10 @@ namespace ViajesMvcNetCore.Repositories
                 new SqlParameter("@confirmarclave", confirmarClave),
                 new SqlParameter("@preferenciaviaje", preferenciaViaje),
                 new SqlParameter("@coloravatar", colorAvatar),
-                new SqlParameter("@avatarurl", avatarUrl));
+                new SqlParameter("@avatarurl", avatarUrl),
+                new SqlParameter("@edad", edad),
+                new SqlParameter("@nacionalidad", nacionalidad)
+            );
         }
 
         public async Task<List<LugarFavorito>> GetFavoritosLugarAsync(int idUsuario)
