@@ -7,7 +7,6 @@
     <div class="profile-left-section">
         <div class="additional-data-section">
             <h3>Información Adicional</h3>
-            <!-- Sección eliminada: Viajes, Puntuación, Países -->
             <div class="button-group">
                 <button id="lugaresInsertadosBtn" class="active">Mis Lugares</button>
                 <button id="lugaresFavoritosBtn">Favoritos</button>
@@ -60,39 +59,20 @@
                 </div>
             </div>
         </div>
-
-        <div class="leaderboard">
-            <h3>Leaderboard</h3>
-            <ul class="leaderboard-list">
-                <li class="leaderboard-item">
-                    <div class="leaderboard-user">
-                        <span class="leaderboard-position">1</span>
-                        <span class="leaderboard-name">Kameron Porter</span>
-                    </div>
-                    <span class="leaderboard-score">100%</span>
-                </li>
-                <li class="leaderboard-item">
-                    <div class="leaderboard-user">
-                        <span class="leaderboard-position">2</span>
-                        <span class="leaderboard-name">Michael Kopfler</span>
-                    </div>
-                    <span class="leaderboard-score">95%</span>
-                </li>
-                <li class="leaderboard-item">
-                    <div class="leaderboard-user">
-                        <span class="leaderboard-position">3</span>
-                        <span class="leaderboard-name">Alice Koller</span>
-                    </div>
-                    <span class="leaderboard-score">90%</span>
-                </li>
-            </ul>
-        </div>
-
         <div class="action-section">
-            <a class="btn btn-primary" asp-controller="Lugares" asp-action="Create">
+            <a class="btn btn-primary m-3" asp-controller="Lugares" asp-action="Create">
                 <i class="fas fa-plus-circle"></i> Crear Lugar
             </a>
         </div>
+
+        <div class="seguidores-section-container" style="background-color: white; padding: 15px; border-radius: 5px;">
+            <div class="seguidores-section">
+                <button id="mostrarSeguidoresBtn" class="btn btn-primary m-3">Mostrar Seguidores</button>
+                <div id="containerseguidores" class="m-3" style="display: none;">
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -167,7 +147,25 @@
         border-radius: 50%;
         display: inline-block;
     }
+
+    .seguidores-section {
+        margin-top: 20px;
+    }
+
+    .seguidor-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .seguidor-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
 </style>
+
 
 @section Scripts {
     <script>
@@ -187,6 +185,12 @@
                 $(this).addClass("active").siblings().removeClass("active");
                 request = "/Home/_Favoritos?idUsuario=" + idUsuario;
                 $("#containerlugares").load(request);
+            });
+
+            $("#mostrarSeguidoresBtn").click(function() {
+                $("#containerseguidores").load("/Home/_Seguidos?idusuario=" + idUsuario, function() {
+                    $("#containerseguidores").load(request); 
+                });
             });
         });
     </script>

@@ -321,5 +321,12 @@ namespace AvatarDinamicoPersonalizado.Controllers
             return RedirectToAction("_Favoritos");
 
         }
+
+        public async Task<IActionResult> _Seguidos(int idusuario)
+        {
+
+            List<UsuarioSeguidoPerfil> seguido = await this.repo.GetSeguidoresUsuarioAsync(idusuario);
+            return PartialView("_Seguidos", seguido);
+        }
     }
 }

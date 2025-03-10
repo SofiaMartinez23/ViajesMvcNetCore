@@ -17,6 +17,7 @@ namespace ViajesMvcNetCore.Data
         public DbSet<Comentario> Comentarios { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<UsuarioCompletoViewModel> UsuarioCompletoViewModels { get; set; }
+        public DbSet<UsuarioSeguidoPerfil> UsuarioSeguidoPerfiles { get; set; }
 
     }
 }

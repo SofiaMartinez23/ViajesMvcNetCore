@@ -50,6 +50,5 @@ namespace ViajesMvcNetCore.Repositories
             return lugares;
         }
 
-
     }
 }

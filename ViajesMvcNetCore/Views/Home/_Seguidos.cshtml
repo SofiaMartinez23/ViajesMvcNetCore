@@ -1,0 +1,16 @@
+﻿@model List<UsuarioSeguidoPerfil>
+
+@if (Model != null && Model.Any())
+{
+    @foreach (var seguidor in Model)
+    {
+        <div class="seguidor-item">
+            <img src="@seguidor.ImagenSeguido" alt="@seguidor.NombreSeguido" class="seguidor-avatar" />
+            <p>@seguidor.NombreSeguido</p>
+        </div>
+    }
+}
+else
+{
+    <p>No hay seguidores.</p>
+}

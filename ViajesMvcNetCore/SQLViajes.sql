@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS CHAT;
 DROP TABLE IF EXISTS COMENTARIOS;
+DROP TABLE IF EXISTS SEGUIDORES;
 DROP TABLE IF EXISTS LUGARESFAVORITOS;
 DROP TABLE IF EXISTS LUGARES;
 DROP TABLE IF EXISTS USUARIOLOGIN;
@@ -53,6 +54,15 @@ CREATE TABLE LUGARES (
     CONSTRAINT FK_LUGARES_USUARIOS FOREIGN KEY (ID_USUARIO) REFERENCES USUARIOS(ID_USUARIO) -- Definimos la clave foránea
 );
 
+-- Crear tabla SEGUIDORES
+CREATE TABLE SEGUIDORES (
+    ID_SEGUIDOR INT PRIMARY KEY,
+    ID_USUARIO_SEGUIDOR INT NOT NULL, -- El usuario que sigue
+    ID_USUARIO_SEGUIDO INT NOT NULL, -- El usuario que es seguido
+    FECHA_SEGUIMIENTO DATETIME NOT NULL,
+    CONSTRAINT FK_SEGUIDORES_SEGUIDOR FOREIGN KEY (ID_USUARIO_SEGUIDOR) REFERENCES USUARIOS(ID_USUARIO),
+    CONSTRAINT FK_SEGUIDORES_SEGUIDO FOREIGN KEY (ID_USUARIO_SEGUIDO) REFERENCES USUARIOS(ID_USUARIO)
+);
 
 -- Crear tabla LUGARESFAVORITOS
 CREATE TABLE LUGARESFAVORITOS (
@@ -122,11 +132,11 @@ VALUES
 -- Insertar datos de ejemplo en LUGARES
 INSERT INTO LUGARES (ID_LUGAR, NOMBRE, DESCRIPCION, UBICACION, CATEGORIA, HORARIO, IMAGEN, TIPO, ID_USUARIO)
 VALUES
-(1, 'Central Park', 'Un gran parque urbano con lagos, senderos y jardines.', 'Nueva York, EE.UU.', 'Parque', '2024-01-01T06:00:00', 'central_park.jpg', 'Público',1),
-(2, 'Museo del Louvre', 'Uno de los museos de arte más grandes y visitados del mundo.', 'París, Francia', 'Museo', '2024-01-01T09:00:00', 'louvre.jpg', 'Público',1),
-(3, 'Playa de Copacabana', 'Una famosa playa con arena blanca y un paseo marítimo animado.', 'Río de Janeiro, Brasil', 'Playa', '2024-01-01T00:00:00', 'copacabana.jpg', 'Público',2),
+(1, 'Central Park', 'Un gran parque urbano con lagos, senderos y jardines.', 'Nueva York, EE.UU.', 'Parque', '2024-01-01T06:00:00', 'central_park.jpg', 'Publico',1),
+(2, 'Museo del Louvre', 'Uno de los museos de arte más grandes y visitados del mundo.', 'París, Francia', 'Museo', '2024-01-01T09:00:00', 'louvre.jpg', 'Publico',1),
+(3, 'Playa de Copacabana', 'Una famosa playa con arena blanca y un paseo marítimo animado.', 'Río de Janeiro, Brasil', 'Playa', '2024-01-01T00:00:00', 'copacabana.jpg', 'Publico',2),
 (4, 'La Trattoria', 'Un restaurante italiano con auténtica cocina casera.', 'Roma, Italia', 'Restaurante', '2024-01-01T12:00:00', 'trattoria.jpg', 'Privado',3),
-(5, 'La Gran Muralla China', 'Una serie de fortificaciones construidas a lo largo de las fronteras históricas del norte de China.', 'China', 'Monumento', '2024-01-01T08:00:00', 'gran_muralla.jpg', 'Público',4);
+(5, 'La Gran Muralla China', 'Una serie de fortificaciones construidas a lo largo de las fronteras históricas del norte de China.', 'China', 'Monumento', '2024-01-01T08:00:00', 'gran_muralla.jpg', 'Publico',4);
 -- Ejemplo 1: Un parque famoso
 
 -- Insertar datos de ejemplo en LUGARESFAVORITOS
@@ -152,6 +162,7 @@ VALUES
 -- Insertar datos de ejemplo en CHAT
 INSERT INTO CHAT (ID_MENSAJE, ID_USUARIO_REMITENTE, ID_USUARIO_DESTINATARIO, MENSAJE, FECHA_ENVIO)
 VALUES
+(7, 1, 5, N'Hola María, ¿cómo estás?', GETDATE()),
 (1, 1, 2, N'Hola María, ¿cómo estás?', GETDATE()),
 (2, 2, 1, N'Hola Juan, estoy bien gracias. ¿Y tú?', GETDATE()),
 (3, 1, 3, N'Pedro, ¿has visitado algún lugar interesante últimamente?', GETDATE()),
@@ -159,6 +170,16 @@ VALUES
 (5, 4, 5, N'Carlos, ¿quieres ir a Cancún conmigo?', GETDATE()),
 (6, 5, 4, N'¡Claro que sí, Luisa! Me encantaría.', GETDATE());
 
+-- Insertar datos de ejemplo en SEGUIDORES
+INSERT INTO SEGUIDORES (ID_SEGUIDOR, ID_USUARIO_SEGUIDOR, ID_USUARIO_SEGUIDO, FECHA_SEGUIMIENTO)
+VALUES
+(6, 1, 4, GETDATE()), 
+(7, 1, 3, GETDATE()),
+(1, 1, 2, GETDATE()), 
+(2, 1, 3, GETDATE()), 
+(3, 2, 4, GETDATE()), 
+(4, 3, 1, GETDATE()), 
+(5, 4, 5, GETDATE());
 
 -- SP_INSERT_LUGARES (Modificado con CATEGORIA y HORARIO)
 CREATE OR ALTER PROCEDURE SP_INSERT_LUGARES
@@ -448,18 +469,28 @@ CREATE OR ALTER PROCEDURE SP_UPDATE_PERFIL
     @confirmarclave VARCHAR(255),
     @preferenciaviaje VARCHAR(255),
     @coloravatar VARCHAR(7),
-    @avatarurl VARCHAR(255)
+    @avatarurl VARCHAR(255),
+    @edad INT, -- Añadimos el parámetro para la edad
+    @nacionalidad VARCHAR(100) -- Añadimos el parámetro para la nacionalidad
 AS
 BEGIN
+    -- Actualizar USUARIOLOGIN
     UPDATE USUARIOLOGIN
     SET
-        NOMBRE  = @nombre,
+        NOMBRE = @nombre,
         CORREO = @correo,
         CLAVE = @clave,
         CONFIRMARCLAVE = @confirmarclave,
         PREFERENCIASDEVIAJE = @preferenciaviaje,
         COLORAVATAR = @coloravatar,
         AVATARURL = @avatarurl
+    WHERE ID_USUARIO = @id_usuario;
+
+    -- Actualizar USUARIOS
+    UPDATE USUARIOS
+    SET
+        EDAD = @edad,
+        NACIONALIDAD = @nacionalidad
     WHERE ID_USUARIO = @id_usuario;
 END;
 GO
@@ -580,3 +611,87 @@ BEGIN
 END
 
 EXEC SP_UPDATE_COMENTARIO 14, 4, 1, 'holaaa', '2025-03-10 09:38:44.677'
+
+
+CREATE PROCEDURE GetLugaresPorTipo
+    @tipo NVARCHAR(50)
+AS
+BEGIN
+    SELECT * 
+    FROM LUGARES
+    WHERE Tipo = @tipo;
+END;
+
+SELECT * 
+    FROM LUGARES
+    WHERE Tipo = 'Publico';
+
+
+
+	CREATE OR ALTER VIEW VISTAUSUARIOCOMPLETO AS
+SELECT
+    U.ID_USUARIO,
+    U.NOMBRE,
+    U.EMAIL,
+    U.EDAD,
+    U.NACIONALIDAD,
+    U.PREFERENCIASDEVIAJE,
+    U.IMAGEN,
+    U.FECHADEREGISTRO,
+    UL.CORREO AS CORREOLOGIN,
+    UL.CLAVE,
+    UL.CONFIRMARCLAVE,
+    UL.COLORAVATAR,
+    UL.AVATARURL
+FROM
+    USUARIOS U
+INNER JOIN
+    USUARIOLOGIN UL ON U.ID_USUARIO = UL.ID_USUARIO;
+GO
+
+
+
+SELECT
+    S.ID_USUARIO_SEGUIDO,
+    U.NOMBRE AS NOMBRE_SEGUIDO,
+    U.IMAGEN AS IMAGEN_SEGUIDO
+FROM
+    SEGUIDORES S
+JOIN
+    USUARIOS U ON S.ID_USUARIO_SEGUIDO = U.ID_USUARIO
+WHERE
+    S.ID_USUARIO_SEGUIDOR = 1;
+
+
+
+
+	CREATE OR ALTER VIEW VISTA_USUARIOS_SEGUIDOS_PERFIL AS
+SELECT
+    S.ID_USUARIO_SEGUIDOR,
+    S.ID_USUARIO_SEGUIDO,
+    U.NOMBRE AS NOMBRE_SEGUIDO,
+    U.IMAGEN AS IMAGEN_SEGUIDO,
+    S.FECHA_SEGUIMIENTO
+FROM
+    SEGUIDORES S
+JOIN
+    USUARIOS U ON S.ID_USUARIO_SEGUIDO = U.ID_USUARIO;
+GO
+
+CREATE OR ALTER PROCEDURE SP_SEGUIDORES_BY_USUARIO
+    @idusuario INT
+AS
+BEGIN
+    SELECT
+        ID_USUARIO_SEGUIDOR,
+        ID_USUARIO_SEGUIDO,
+        NOMBRE_SEGUIDO,
+        IMAGEN_SEGUIDO,
+        FECHA_SEGUIMIENTO
+    FROM
+        VISTA_USUARIOS_SEGUIDOS_PERFIL
+    WHERE
+        ID_USUARIO_SEGUIDOR = @idusuario;
+END
+GO
+EXEC SP_SEGUIDORES_BY_USUARIO 1
