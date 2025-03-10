@@ -1,0 +1,197 @@
+﻿@model UsuarioLogin
+@{
+    ViewData["Title"] = "Editar Perfil";
+}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        color: #343a40;
+    }
+
+    .container {
+        max-width: 800px;
+        margin-top: 10px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        color: #004C97;
+    }
+
+    .form-control, .form-select {
+        border-radius: 25px;
+    }
+
+    .btn-primary {
+        background-color: #004C97;
+        border-color: #004C97;
+        font-weight: 500;
+        border-radius: 25px;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004C97;
+        }
+
+    .btn-outline-primary {
+        border-color: #004C97;
+        color: #004C97;
+        font-weight: 500;
+        border-radius: 25px;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #004C97;
+            color: white;
+        }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .btn-back {
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+
+    .input-group-text {
+        border-radius: 0 25px 25px 0;
+    }
+
+    .avatar-preview {
+        border-radius: 50%;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+</style>
+
+<div class="container">
+    <div class="mb-2">
+        <a asp-action="Perfil" asp-route-id="@Model.IdUsuario" class="btn btn-outline-primary btn-lg btn-back">
+            ←
+        </a>
+    </div>
+
+    <h1>Editar mi Perfil</h1>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger" style="border-radius: 15px;">
+            @ViewBag.Error
+        </div>
+    }
+
+    <form method="post" asp-action="EditarPerfil" class="needs-validation" novalidate>
+        <input type="hidden" asp-for="IdUsuario" />
+        <input type="hidden" id="HiddenColorAvatar" name="ColorAvatar" value="@Model.ColorAvatar" />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Nombre" class="h5">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Tu nombre" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Correo" class="h5">Correo electrónico</label>
+                    <input asp-for="Correo" class="form-control" type="email" placeholder="ejemplo@correo.com" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Clave" class="h5">Contraseña</label>
+                    <input asp-for="Clave" class="form-control" type="password" placeholder="Contraseña" />
+                    <span asp-validation-for="Clave" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ConfirmarClave" class="h5">Confirmar Contraseña</label>
+                    <input asp-for="ConfirmarClave" class="form-control" type="password" placeholder="Confirma tu contraseña" />
+                    <span asp-validation-for="ConfirmarClave" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="PreferenciaViaje" class="h5">Preferencia de Viaje</label>
+                    <select asp-for="PreferenciaViaje" class="form-select">
+                        <option value="">Selecciona tu preferencia...</option>
+                        <option value="Turístico">Turístico</option>
+                        <option value="Restaurante">Restaurante</option>
+                        <option value="Deporte">Deporte</option>
+                        <option value="Cultura">Cultura</option>
+                        <option value="Naturaleza">Naturaleza</option>
+                        <option value="Comercial">Comercial</option>
+                        <option value="Educativo">Educativo</option>
+                        <option value="Religioso">Religioso</option>
+                        <option value="Salud">Salud</option>
+                        <option value="Empresarial">Empresarial</option>
+                        <option value="Transporte">Transporte</option>
+                        <option value="Entretenimiento">Entretenimiento</option>
+                        <option value="Aventura">Aventura</option>
+                        <option value="Residencial">Residencial</option>
+                        <option value="Cívico">Cívico</option>
+                    </select>
+                    <span asp-validation-for="PreferenciaViaje" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="AvatarUrl" class="h5">URL de Avatar</label>
+                    <div class="input-group">
+                        <input asp-for="AvatarUrl" class="form-control" placeholder="URL de imagen para avatar" />
+                        <span class="input-group-text p-0">
+                            <img id="preview-avatar" src="@Model.AvatarUrl" alt="Avatar Preview"
+                                 class="rounded-circle" style="width: 40px; height: 40px;"
+                                 onerror="this.src='/images/default-avatar.png'">
+                        </span>
+                    </div>
+                    <span asp-validation-for="AvatarUrl" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="ColorAvatar" class="form-control" type="color" readonly disabled />
+                    <span asp-validation-for="ColorAvatar" class="text-danger" disabled></span>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-outline-primary btn-lg btn-back">Guardar cambios</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $("#AvatarUrl").on("change", function() {
+                var url = $(this).val();
+                if (url) {
+                    $("#preview-avatar").attr("src", url);
+                    $(".avatar-preview").css("background-color", "transparent");
+                }
+            });
+
+            $("#ColorAvatar").on("input", function() {
+                var color = $(this).val();
+                $(".avatar-preview").css("background-color", color);
+
+                if (!$("#AvatarUrl").val()) {
+                    $("#preview-avatar").attr("src", "/images/default-avatar.png");
+                }
+
+                $("#HiddenColorAvatar").val(color);
+            });
+
+            if (!$("#AvatarUrl").val()) {
+                $(".avatar-preview").css("background-color", $("#ColorAvatar").val());
+                $("#preview-avatar").attr("src", "/images/default-avatar.png");
+            }
+        });
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

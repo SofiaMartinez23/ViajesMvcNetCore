@@ -1,0 +1,56 @@
+﻿@model List<Comentario>
+
+@if (Model != null && Model.Count > 0)
+{
+    @foreach (var comentario in Model)
+    {
+        <div class="comment-card" data-comentario-id="@comentario.IdComentario" data-lugar-id="@comentario.IdLugar" data-usuario-id="@comentario.IdUsuario">
+            <img src="https://img.freepik.com/psd-gratis/ilustracion-3d-avatar-o-perfil-humano_23-2150671116.jpg" alt="Avatar" class="comment-avatar" />
+            <div class="comment-content" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>@comentario.NombreUsuario</strong>
+
+                    <p class="comment-text">@comentario.Comentarios</p>
+
+                    <small>@comentario.FechaComentario</small>
+                </div>
+
+                @if (comentario.IdUsuario == Context.Session.GetInt32("IdUsuario"))
+                {
+                    <button class="btn btn-danger btn-sm eliminar-comentario" style="background: none; border: none; padding: 0;">
+                        <i class="fas fa-trash-alt" style="font-size: 1.5em; color: red;"></i>
+                    </button>
+                    <button class="btn btn-warning btn-sm editar-comentario" style="background: none; border: none; padding: 0;">
+                        <i class="fas fa-edit" style="font-size: 1.5em; color: orange;"></i>
+                    </button>
+                }
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p>No hay comentarios disponibles.</p>
+}
+
+<script>
+    $(document).ready(function() {
+        // Manejar el clic del botón de eliminar comentario
+        $(document).on('click', '.eliminar-comentario', function(e) {
+            e.preventDefault();
+
+            var comentarioCard = $(this).closest('.comment-card');
+            var comentarioId = comentarioCard.data('comentario-id');
+            var lugarId = comentarioCard.data('lugar-id');
+
+            if (confirm('¿Estás seguro de que deseas eliminar este comentario?')) {
+                $.post('/Lugares/DeleteComentario', { idComentario: comentarioId, idLugar: lugarId }, function() {
+                    // Eliminar el comentario de la vista inmediatamente
+                    comentarioCard.remove();
+                }).fail(function() {
+                    alert('Error al eliminar el comentario.');
+                });
+            }
+        });
+    });
+</script>

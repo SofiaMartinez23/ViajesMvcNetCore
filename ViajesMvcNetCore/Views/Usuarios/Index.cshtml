@@ -1,0 +1,86 @@
+﻿@model List<Usuario>
+
+@{
+    ViewData["Title"] = "Usuarios";
+    Layout = "_Layout";
+    string defaultImageUrl = "https://cdn3d.iconscout.com/3d/premium/thumb/chico-avatar-6299533-5187865.png?f=webp";
+}
+
+<link href="~/css/usuariosindex.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="title">@ViewData["Title"]</h1>
+        <div class="d-flex align-items-center">
+            <!-- Icono de lupa como logo -->
+            <i class="fas fa-search small-logo m-3"></i>
+            <input type="text" class="form-control search-input" placeholder="Buscar lugares..." id="searchInput">
+        </div>
+    </div>
+
+    <div class="row row-cols-md-3 row-cols-1 g-4" id="usersContainer">
+        @foreach (var usuario in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm rounded-lg card-custom">
+                    <div class="photo position-relative">
+                        <img src="@(string.IsNullOrEmpty(usuario.Imagen) ? defaultImageUrl : usuario.Imagen)"
+                             alt="@usuario.Nombre" class="card-img-top rounded-circle mx-auto d-block"
+                             onerror="this.src='@defaultImageUrl';" />
+                        <div class="photos position-absolute top-0 start-50 translate-middle">
+                            <i class="fas fa-camera-retro text-white"></i>
+                        </div>
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title txt4">@usuario.Nombre</h5>
+                        <p class="card-text txt5">@usuario.Nacionalidad</p>
+                        <p class="card-text txt2">Edad: @usuario.Edad</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <p>
+                            <a asp-controller="Usuarios" asp-action="PerfilUser" asp-route-idusuario="@usuario.IdUsuario" class="btn btn-outline-primary">Ver Perfil</a>
+                            <a id="heart-@usuario.IdUsuario" class="heart-link ms-2">
+                                <span class="like">
+                                    <i class="fab fa-gratipay heart-icon"></i>Seguir
+                                </span>
+                            </a>
+                        </p>
+                        <p class="txt3"><i class="far fa-calendar"></i> Fecha de registro: @usuario.FechaRegistro.ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Obtener el contenedor de usuarios y el campo de búsqueda
+    const searchInput = document.getElementById("searchInput");
+    const usersContainer = document.getElementById("usersContainer");
+
+    // Evento para filtrar los usuarios por nombre
+    searchInput.addEventListener("input", function() {
+        const searchTerm = searchInput.value.toLowerCase();
+
+        // Obtener todos los elementos de usuario dentro del contenedor
+        const usuarios = usersContainer.getElementsByClassName("col");
+        Array.from(usuarios).forEach(usuario => {
+            const usuarioNombre = usuario.querySelector(".txt4").textContent.toLowerCase();
+
+            // Mostrar u ocultar los usuarios según el término de búsqueda
+            if (usuarioNombre.includes(searchTerm)) {
+                usuario.style.display = "block";
+            } else {
+                usuario.style.display = "none";
+            }
+        });
+    });
+
+    // Funcionalidad de "seguir" (cambiar el color del corazón al hacer clic)
+    $(document).ready(function() {
+        $('.heart-link').click(function() {
+            $(this).find('.heart-icon').toggleClass('red-heart'); // Cambia la clase para cambiar el color del corazón
+        });
+    });
+</script>

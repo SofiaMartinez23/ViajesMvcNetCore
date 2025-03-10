@@ -1,0 +1,85 @@
+﻿@{
+    string defaultImageUrl = "https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-rocas_23-2150800507.jpg";
+}
+<link rel="stylesheet" href="~/css/styledetailslugar.css" />
+
+    <div class="container">
+        <!-- Botón para regresar a la página de lugares -->
+
+        <div class="place-card">
+            <img src="@(string.IsNullOrEmpty(Model.Imagen) ? defaultImageUrl : Model.Imagen)"
+                 alt="@Model.Nombre" class="place-image" onerror="this.src='@defaultImageUrl';" />
+
+            <div class="place-header">
+                <h1>@Model.Nombre</h1>
+            </div>
+
+            <div class="row info-section">
+                <div class="col-md-6">
+                    <h5>Detalles del Lugar</h5>
+                    <p>@Model.Descripcion</p>
+                    <p><strong>Ubicación:</strong> @Model.Ubicacion</p>
+                    <p><strong>Tipo:</strong> <span class="type-badge">@Model.Tipo</span></p>
+
+                    <div class="add-comment-section">
+                        <h5>Añadir Comentario</h5>
+                        <form asp-action="CreateComment" asp-route-idlugar="@Model.IdLugar" method="post">
+                            <input type="hidden" name="idlugar" value="@Model.IdLugar" />
+                            @if (Context.Session.GetInt32("IdUsuario").HasValue)
+                            {
+                                <textarea name="comentario" class="form-control mb-3" rows="2" placeholder="Escribe tu comentario..." required></textarea>
+                                <button type="submit" class="btn submit-comment-btn w-100">Enviar Comentario</button>
+                            }
+                            else
+                            {
+                                <p>Debes iniciar sesión para dejar un comentario.</p>
+                            }
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="comments-section">
+                        <div class="comments-list" id="comentariosContainer">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <a asp-controller="Lugares" asp-action="Index" class="btn btn-outline-primary btn-lg btn-back">
+                        ←
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function cargarComentarios() {
+                $("#comentariosContainer").load("/Lugares/_Comentarios?idlugar=@Model.IdLugar", function(response) {
+                    if ($("#comentariosContainer .comment-card").length > 3) {
+                        $(".comments-list").css({
+                            'max-height': '400px',
+                            'overflow-y': 'auto'
+                        });
+                    }
+                });
+            }
+
+            cargarComentarios();
+
+            $("form").on("submit", function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(result) {
+                        $("textarea[name='comentario']").val('');
+                        cargarComentarios();
+                    }
+                });
+            });
+        });
+    </script>
+

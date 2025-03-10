@@ -1,0 +1,201 @@
+﻿@model List<Lugar>
+@{
+    string defaultImageUrl = "https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-rocas_23-2150800507.jpg";
+}
+
+<div class="row row-cols-1 row-cols-md-2 g-4" id="placesContainer">
+    @foreach (var lugar in Model)
+    {
+        <div class="col">
+            <div class="card h-100 card-custom">
+                <div class="photo">
+                    <img src="@(string.IsNullOrEmpty(lugar.Imagen) ? defaultImageUrl : lugar.Imagen)"
+                         alt="@lugar.Nombre" class="card-img-top" onerror="this.src='@defaultImageUrl';" />
+                    <div class="photos">Photos</div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title txt4">@lugar.Nombre</h5>
+                    <p class="card-text txt5">@lugar.Ubicacion</p>
+                    <p class="card-text txt2">@lugar.Descripcion</p>
+                </div>
+                <div class="card-footer">
+                    <p>
+                        <a asp-controller="Lugares" asp-action="Details" asp-route-idlugar="@lugar.IdLugar" class="btn btn-outline-danger">Read More</a>
+                        <a id="heart-@lugar.IdLugar" class="heart-link">
+                            <span class="like">
+                                <i class="fab fa-gratipay heart-icon"></i>Like
+                            </span>
+                        </a>
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="txt3 mb-0"><i class="far fa-clock"></i>@lugar.Horario</p>
+                        <div class="card-actions">
+                            <a asp-controller="Home" asp-action="EditLugar" asp-route-idLugar="@lugar.IdLugar" class="edit-link" title="Editar">
+                                <i class="fas fa-pencil-alt text-primary"></i>
+                            </a>
+                            <a href="#" class="delete-link" data-id="@lugar.IdLugar" title="Eliminar">
+                                <i class="fas fa-trash-alt text-danger"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        $('.heart-link').click(function () {
+            $(this).find('.heart-icon').toggleClass('red-heart');
+            $(this).toggleClass('red-heart');
+        });
+
+        $('.delete-link').click(function (e) {
+            e.preventDefault();
+
+            var idLugar = $(this).data('id');
+            var card = $(this).closest('.col');
+
+            if (confirm('¿Estás seguro de que deseas eliminar este lugar?')) {
+                $.post('/Home/DeleteConfirmed', { idLugar: idLugar }, function () {
+                    card.remove();
+                });
+            }
+        });
+    });
+</script>
+
+
+<style>
+    /* Estilos para las tarjetas de lugares */
+    .card-custom {
+        transition: all 0.3s ease;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        width: 100%;
+    }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+    .photo {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-img-top {
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+        width: 100%;
+    }
+
+    .card-custom:hover .card-img-top {
+        transform: scale(1.05);
+    }
+
+    .photos {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
+
+    .card-title.txt4 {
+        font-weight: bold;
+        font-size: 1.4rem;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .card-text.txt5 {
+        color: #666;
+        font-style: italic;
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+
+    .card-text.txt2 {
+        font-size: 1rem;
+        color: #555;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .card-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid rgba(0,0,0,0.1);
+        padding: 1.2rem;
+    }
+
+    .btn-outline-danger {
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .heart-link {
+        float: right;
+        cursor: pointer;
+        color: #333; /* Color negro por defecto */
+        transition: all 0.3s;
+        margin-top: 3px;
+    }
+
+    .heart-icon {
+        font-size: 1.2rem;
+        margin-right: 5px;
+    }
+
+    .red-heart {
+        color: #ff0000 !important; /* Color rojo al hacer clic */
+    }
+
+    .txt3 {
+        color: #777;
+        font-size: 0.9rem;
+        margin-bottom: 0;
+    }
+
+        .txt3 i {
+            margin-right: 5px;
+        }
+
+    .comments {
+        float: right;
+        color: #666;
+    }
+
+        .comments i {
+            margin-right: 5px;
+        }
+
+    .card-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .edit-link, .delete-link {
+        font-size: 1.1rem;
+        transition: all 0.2s;
+    }
+
+        .edit-link:hover {
+            transform: scale(1.1);
+        }
+
+        .delete-link:hover {
+            transform: scale(1.1);
+        }
+</style>
