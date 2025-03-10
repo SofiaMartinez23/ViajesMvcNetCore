@@ -21,11 +21,21 @@ namespace ViajesMvcNetCore.Controllers
             this.repo = repo;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string tipo)
         {
-            List<Lugar> lugar = await this.repo.GetLugaresAsync();
-            return View(lugar);
+            List<Lugar> lugares;
+            if (string.IsNullOrEmpty(tipo))
+            {
+                lugares = await this.repo.GetLugaresAsync();
+            }
+            else
+            {
+                lugares = await this.repo.GetLugaresPorTipoAsync(tipo);
+            }
+
+            return View(lugares);
         }
+
 
         public async Task<IActionResult> Search(string searchTerm)
         {

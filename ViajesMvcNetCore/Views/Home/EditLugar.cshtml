@@ -31,13 +31,29 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="Categoria" class="h5">Categoría</label>
-                        <input asp-for="Categoria" class="form-control" placeholder="Categoría del lugar" required>
-                        <span asp-validation-for="Categoria" class="text-danger"></span>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label asp-for="Categoria" class="h5">Categoría</label>
+                <select asp-for="Categoria" class="form-select form-select-lg" required>
+                    <option value="" selected></option>
+                    <option value="Turístico">Turístico</option>
+                    <option value="Restaurante">Restaurante</option>
+                    <option value="Deporte">Deporte</option>
+                    <option value="Cultura">Cultura</option>
+                    <option value="Naturaleza">Naturaleza</option>
+                    <option value="Comercial">Comercial</option>
+                    <option value="Educativo">Educativo</option>
+                    <option value="Religioso">Religioso</option>
+                    <option value="Salud">Salud</option>
+                    <option value="Empresarial">Empresarial</option>
+                    <option value="Transporte">Transporte</option>
+                    <option value="Entretenimiento">Entretenimiento</option>
+                    <option value="Aventura">Aventura</option>
+                    <option value="Residencial">Residencial</option>
+                    <option value="Cívico">Cívico</option>
+                </select>
+                <span asp-validation-for="Categoria" class="text-danger"></span>
+            </div>
+
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="Horario" class="h5">Horario</label>

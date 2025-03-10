@@ -16,7 +16,7 @@ namespace ViajesMvcNetCore.Data
         public DbSet<LugarFavorito> LugaresFavoritos { get; set; }
         public DbSet<Comentario> Comentarios { get; set; }
         public DbSet<Chat> Chats { get; set; }
-
+        public DbSet<UsuarioCompletoViewModel> UsuarioCompletoViewModels { get; set; }
 
     }
 }

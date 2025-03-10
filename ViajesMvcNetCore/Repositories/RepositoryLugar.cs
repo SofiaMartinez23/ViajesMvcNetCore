@@ -136,6 +136,15 @@ namespace ViajesMvcNetCore.Repositories
             );
         }
 
+        public async Task<List<Lugar>> GetLugaresPorTipoAsync(string tipo)
+        {
+            var lugares = await this.context.Lugares
+                .Where(l => l.Tipo.ToLower() == tipo.ToLower())
+                .ToListAsync();
+
+            return lugares;
+        }
+
 
 
     }

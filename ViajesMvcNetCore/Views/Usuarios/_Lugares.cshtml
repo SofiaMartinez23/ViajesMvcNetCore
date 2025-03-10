@@ -2,36 +2,42 @@
 @{
     string defaultImageUrl = "https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-rocas_23-2150800507.jpg";
 }
-<div class="row row-cols-1 row-cols-md-2 g-4" id="placesContainer">
-    @foreach (var lugar in Model)
-    {
-        <div class="col">
-            <div class="card h-100 card-custom">
-                <div class="photo">
-                    <img src="@(string.IsNullOrEmpty(lugar.Imagen) ? defaultImageUrl : lugar.Imagen)"
-                         alt="@lugar.Nombre" class="card-img-top" onerror="this.src='@defaultImageUrl';" />
-                    <div class="photos">Photos</div>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title txt4">@lugar.Nombre</h5>
-                    <p class="card-text txt5">@lugar.Ubicacion</p>
-                    <p class="card-text txt2">@lugar.Descripcion</p>
-                </div>
-                <div class="card-footer">
-                    <p>
-                        <a asp-controller="Lugares" asp-action="Details" asp-route-idlugar="@lugar.IdLugar" class="btn btn-outline-danger">Read More</a>
-                        <a id="heart-@lugar.IdLugar" class="heart-link">
-                            <span class="like">
-                                <i class="fab fa-gratipay heart-icon"></i>Like
-                            </span>
-                        </a>
-                    </p>                   
+
+<div style="position: relative;">
+    <a asp-controller="Usuarios" asp-action="Index" class="btn btn-outline-dark" style="position: absolute; top: -30px; left: 0; padding: 5px 10px;">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4" id="placesContainer">
+        @foreach (var lugar in Model)
+        {
+            <div class="col">
+                <div class="card h-100 card-custom">
+                    <div class="photo">
+                        <img src="@(string.IsNullOrEmpty(lugar.Imagen) ? defaultImageUrl : lugar.Imagen)"
+                             alt="@lugar.Nombre" class="card-img-top" onerror="this.src='@defaultImageUrl';" />
+                        <div class="photos">Photos</div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title txt4">@lugar.Nombre</h5>
+                        <p class="card-text txt5">@lugar.Ubicacion</p>
+                        <p class="card-text txt2">@lugar.Descripcion</p>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            <a asp-controller="Lugares" asp-action="Details" asp-route-idlugar="@lugar.IdLugar" class="btn btn-outline-danger">Read More</a>
+                            <a id="heart-@lugar.IdLugar" class="heart-link">
+                                <span class="like">
+                                    <i class="fab fa-gratipay heart-icon"></i>Like
+                                </span>
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
-
 
 <style>
     /* Estilos para las tarjetas de lugares */
@@ -47,7 +53,6 @@
             transform: translateY(-5px);
             box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
-
     .photo {
         position: relative;
         overflow: hidden;

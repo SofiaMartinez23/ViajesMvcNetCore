@@ -20,11 +20,13 @@ namespace ViajesMvcNetCore.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var idUsuarioSesion = HttpContext.Session.GetInt32("IdUsuario"); 
-            List<Usuario> usuarios = await this.repo.GetUsuariosAsync();
-            var usuariosFiltrados = usuarios.Where(u => u.IdUsuario != idUsuarioSesion).ToList();
+            var idUsuarioSesion = HttpContext.Session.GetInt32("IdUsuario");
 
-            return View(usuariosFiltrados); 
+            var usuariosCompletos = await context.UsuarioCompletoViewModels
+                .Where(u => u.IdUsuario != idUsuarioSesion)
+                .ToListAsync();
+
+            return View(usuariosCompletos);
         }
 
         public async Task<IActionResult> Search(string searchTerm)

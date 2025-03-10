@@ -91,9 +91,27 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="categoria" class="h5">Categoría</label>
-                        <input type="text" class="form-control" id="categoria" name="Categoria" placeholder="Categoría del lugar" required>
+                        <select class="form-select form-select-lg" id="categoria" name="Categoria" required>
+                            <option value="" selected></option>
+                            <option value="Turístico">Turístico</option>
+                            <option value="Restaurante">Restaurante</option>
+                            <option value="Deporte">Deporte</option>
+                            <option value="Cultura">Cultura</option>
+                            <option value="Naturaleza">Naturaleza</option>
+                            <option value="Comercial">Comercial</option>
+                            <option value="Educativo">Educativo</option>
+                            <option value="Religioso">Religioso</option>
+                            <option value="Salud">Salud</option>
+                            <option value="Empresarial">Empresarial</option>
+                            <option value="Transporte">Transporte</option>
+                            <option value="Entretenimiento">Entretenimiento</option>
+                            <option value="Aventura">Aventura</option>
+                            <option value="Residencial">Residencial</option>
+                            <option value="Cívico">Cívico</option>
+                        </select>
                     </div>
                 </div>
+
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="horario" class="h5">Horario</label>
@@ -112,7 +130,7 @@
                     <div class="form-group">
                         <label for="tipo" class="h5">Tipo</label>
                         <select class="form-control" id="tipo" name="Tipo" required>
-                            <option value="Público">Público</option>
+                            <option value="Publico">Publico</option>
                             <option value="Privado">Privado</option>
                         </select>
                     </div>

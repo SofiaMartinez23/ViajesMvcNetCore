@@ -14,7 +14,7 @@ builder.Services.AddSession(options =>
 });
 
 string connectionString =
-    builder.Configuration.GetConnectionString("SqlHospital");
+    builder.Configuration.GetConnectionString("SqlViajes");
 builder.Services.AddDbContext<ViajesContext>
     (options => options.UseSqlServer(connectionString));
 
