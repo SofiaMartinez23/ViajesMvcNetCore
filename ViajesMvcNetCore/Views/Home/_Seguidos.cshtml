@@ -2,15 +2,23 @@
 
 @if (Model != null && Model.Any())
 {
-    @foreach (var seguidor in Model)
+    @foreach (var seguido in Model)
     {
         <div class="seguidor-item">
-            <img src="@seguidor.ImagenSeguido" alt="@seguidor.NombreSeguido" class="seguidor-avatar" />
-            <p>@seguidor.NombreSeguido</p>
+          
+            <img src="@seguido.ImagenSeguido" alt="@seguido.NombreSeguido" class="seguidor-avatar" />
+            <p>@seguido.NombreSeguido</p>
+
+            <a asp-controller="Usuarios" asp-action="PerfilUser" asp-route-idusuario="@seguido.IdUsuarioSeguido" class="btn btn-outline-primary">
+                <i class="fi fi-rr-interrogation"></i>  <!-- Asegúrate de que el icono se vea con un tamaño adecuado -->
+            </a>
+
         </div>
     }
 }
 else
 {
-    <p>No hay seguidores.</p>
+    <p>No has seguido a ningún usuario aún.</p>
 }
+
+

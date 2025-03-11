@@ -9,7 +9,7 @@ namespace ViajesMvcNetCore.Repositories
     public class RepositoryLugar
     {
         private ViajesContext context;
-
+        
         public RepositoryLugar(ViajesContext context)
         {
             this.context = context;
@@ -113,6 +113,16 @@ namespace ViajesMvcNetCore.Repositories
             );
         }
 
+        public async Task<bool> ExisteFavoritoAsync(int idUsuario, int idLugar)
+        {
+            // Comprobar si el lugar ya está en los favoritos del usuario
+            var favorito = await this.context.LugaresFavoritos
+                .FirstOrDefaultAsync(f => f.IdUsuario == idUsuario && f.IdLugar == idLugar);
+
+            return favorito != null;  // Si ya existe, retorna true
+        }
+
+
         public async Task DeleteComentarioAsync(int idComentario)
         {
             string sql = "DELETE FROM COMENTARIOS WHERE ID_COMENTARIO = @idcomentario";
@@ -144,8 +154,6 @@ namespace ViajesMvcNetCore.Repositories
 
             return lugares;
         }
-
-
 
     }
 }

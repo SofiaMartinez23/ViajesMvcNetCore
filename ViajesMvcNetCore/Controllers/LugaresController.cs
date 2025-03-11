@@ -171,6 +171,58 @@ namespace ViajesMvcNetCore.Controllers
 
             return RedirectToAction("Details", new { idlugar = idLugar });
         }
+        [HttpPost]
+        public async Task<IActionResult> AddFavorito(int idlugar)
+        {
+            // Obtener el IdUsuario de la sesión
+            int? idusuario = HttpContext.Session.GetInt32("IdUsuario");
+
+            if (idusuario.HasValue)
+            {
+                // Verificar si el lugar ya está en los favoritos del usuario
+                var favoritoExistente = await repo.ExisteFavoritoAsync(idusuario.Value, idlugar);
+
+                if (favoritoExistente)
+                {
+                    // Si ya está en favoritos, mostrar un mensaje de error
+                    ViewData["FavoritoError"] = "Este lugar ya está en tus favoritos.";
+                    return RedirectToAction("Index");
+                }
+
+                // Obtener el lugar con el idlugar proporcionado
+                var lugar = await repo.FindLugarAsync(idlugar);
+
+                if (lugar != null)
+                {
+                    // Llamar al método para agregar el lugar a los favoritos
+                    await this.repo.AddFavoritoAsync(
+                        idusuario.Value,
+                        idlugar,
+                        DateTime.Now,
+                        lugar.Imagen,
+                        lugar.Nombre,
+                        lugar.Descripcion,
+                        lugar.Ubicacion,
+                        lugar.Tipo
+                    );
+
+                    // Usar ViewData para enviar un mensaje de éxito
+                    ViewData["FavoritoSuccess"] = "¡Lugar guardado como favorito!";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ViewData["FavoritoError"] = "Lugar no encontrado.";
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                // Si el usuario no está autenticado, redirige a la página de inicio de sesión
+                ViewData["FavoritoError"] = "Debes iniciar sesión para guardar este lugar como favorito.";
+                return RedirectToAction("Login", "Account");
+            }
+        }
 
     }
 }

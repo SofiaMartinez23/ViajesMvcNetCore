@@ -20,12 +20,7 @@
                 </div>
                 <div class="card-footer">
                     <p>
-                        <a asp-controller="Lugares" asp-action="Details" asp-route-idlugar="@lugar.IdLugar" class="btn btn-outline-danger">Read More</a>
-                        <a id="heart-@lugar.IdLugar" class="heart-link">
-                            <span class="like">
-                                <i class="fab fa-gratipay heart-icon"></i>Like
-                            </span>
-                        </a>
+                        <a asp-controller="Lugares" asp-action="Details" asp-route-idlugar="@lugar.IdLugar" class="btn btn-outline-danger">Read More</a> 
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
                         <p class="txt3 mb-0"><i class="far fa-clock"></i>@lugar.Horario</p>
@@ -44,11 +39,7 @@
     }
 </div>
 <script>
-    $(document).ready(function () {
-        $('.heart-link').click(function () {
-            $(this).find('.heart-icon').toggleClass('red-heart');
-            $(this).toggleClass('red-heart');
-        });
+    $(document).ready(function () { 
 
         $('.delete-link').click(function (e) {
             e.preventDefault();

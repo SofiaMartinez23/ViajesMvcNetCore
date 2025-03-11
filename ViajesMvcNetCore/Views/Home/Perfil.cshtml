@@ -64,19 +64,67 @@
                 <i class="fas fa-plus-circle"></i> Crear Lugar
             </a>
         </div>
-
-        <div class="seguidores-section-container" style="background-color: white; padding: 15px; border-radius: 5px;">
-            <div class="seguidores-section">
-                <button id="mostrarSeguidoresBtn" class="btn btn-primary m-3">Mostrar Seguidores</button>
-                <div id="containerseguidores" class="m-3" style="display: none;">
-                </div>
-            </div>
+        <div id="containerseguidores" class="seguidores-container m-3">
+            <!-- Los elementos de los seguidores irán aquí dinámicamente -->
         </div>
-
     </div>
 </div>
 
 <style>
+    /* Estilo general para el contenedor de los seguidores */
+    .seguidores-container {
+        background-color: white; /* Fondo blanco igual que los otros contenedores */
+        padding: 15px;
+        max-height: 400px; /* Ajusta el valor para hacer el contenedor más largo si es necesario */
+        overflow-y: auto; /* Habilita el scroll si hay más de 7 elementos */
+        border-radius: 8px; /* Bordes redondeados */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Añade sombra para dar un efecto de profundidad */
+    }
+
+    /* Estilo para cada seguidor */
+    .seguidor-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Espacio entre el nombre y el botón */
+        background-color: #f9f9f9; /* Fondo suave para los elementos */
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 12px; /* Bordes redondeados */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    }
+
+        .seguidor-item p {
+            margin: 0;
+            padding: 0;
+            flex-grow: 1;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Estilo para el botón de cada seguidor */
+        .seguidor-item .btn-profile {
+            padding: 6px 12px;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .seguidor-item .btn-profile:hover {
+                background-color: #0056b3; /* Cambia el color cuando el usuario pase el ratón */
+            }
+
+        /* Estilo para la imagen del seguidor */
+        .seguidor-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
     .button-group {
         display: flex;
         gap: 15px; /* Espacio entre los botones */
@@ -172,8 +220,11 @@
         $(document).ready(function() {
             var idUsuario = "@Model.IdUsuario";
             var request = "/Home/_Lugares?idUsuario=" + idUsuario;
+            var request2 = "/Home/_Seguidos?idusuario=" + idUsuario;
+
 
             $("#containerlugares").load(request);
+            $("#containerseguidores").load(request2);
 
             $("#lugaresInsertadosBtn").click(function() {
                 $(this).addClass("active").siblings().removeClass("active");
@@ -187,11 +238,7 @@
                 $("#containerlugares").load(request);
             });
 
-            $("#mostrarSeguidoresBtn").click(function() {
-                $("#containerseguidores").load("/Home/_Seguidos?idusuario=" + idUsuario, function() {
-                    $("#containerseguidores").load(request); 
-                });
-            });
+            
         });
     </script>
 }
