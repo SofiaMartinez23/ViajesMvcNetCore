@@ -53,7 +53,6 @@ CREATE TABLE LUGARES (
     ID_USUARIO INT NOT NULL,  -- Relacionamos cada lugar con un usuario
     CONSTRAINT FK_LUGARES_USUARIOS FOREIGN KEY (ID_USUARIO) REFERENCES USUARIOS(ID_USUARIO) -- Definimos la clave foránea
 );
-
 -- Crear tabla SEGUIDORES
 CREATE TABLE SEGUIDORES (
     ID_SEGUIDOR INT PRIMARY KEY,
@@ -140,7 +139,7 @@ VALUES
 -- Ejemplo 1: Un parque famoso
 
 -- Insertar datos de ejemplo en LUGARESFAVORITOS
-INSERT INTO LUGARESFAVORITOS (ID_FAVORITO, ID_USUARIO, ID_LUGAR, FECHADEVISITA_LUGAR, IMAGEN_LUGAR, NOMBRE_LUGAR, DESCRIPCION_LUGAR, UBICACION_LUGAR, TIPO_LUGAR)
+INSERT INTO LUGARESFAVORITOS (ID_USUARIO, ID_LUGAR, FECHADEVISITA_LUGAR, IMAGEN_LUGAR, NOMBRE_LUGAR, DESCRIPCION_LUGAR, UBICACION_LUGAR, TIPO_LUGAR)
 VALUES 
 (1, 1, 1, '2025-03-10', N'https://ejemplo.com/paris.jpg', N'París', N'Capital de Francia, famosa por su cultura.', N'Francia', N'Ciudad'),
 (2, 1, 3, '2025-04-15', N'https://ejemplo.com/beijing.jpg', N'Beijing', N'Capital de China, famosa por su historia antigua.', N'China', N'Ciudad'),
@@ -173,13 +172,13 @@ VALUES
 -- Insertar datos de ejemplo en SEGUIDORES
 INSERT INTO SEGUIDORES (ID_SEGUIDOR, ID_USUARIO_SEGUIDOR, ID_USUARIO_SEGUIDO, FECHA_SEGUIMIENTO)
 VALUES
-(6, 1, 4, GETDATE()), 
-(7, 1, 3, GETDATE()),
 (1, 1, 2, GETDATE()), 
 (2, 1, 3, GETDATE()), 
 (3, 2, 4, GETDATE()), 
 (4, 3, 1, GETDATE()), 
 (5, 4, 5, GETDATE());
+
+select * from LUGARESFAVORITOS where ID_USUARIO=1
 
 -- SP_INSERT_LUGARES (Modificado con CATEGORIA y HORARIO)
 CREATE OR ALTER PROCEDURE SP_INSERT_LUGARES
@@ -518,13 +517,19 @@ CREATE OR ALTER PROCEDURE SP_AGREGAR_FAVORITO
      @nombre NVARCHAR(255), @descripcion NVARCHAR(MAX), @ubicacion NVARCHAR(255), @tipo NVARCHAR(50))
 AS
 BEGIN
+    -- Declarar la variable para el siguiente ID_FAVORITO
+    DECLARE @nuevoIDFavorito INT;
+
+    -- Obtener el siguiente valor del ID_FAVORITO sumando 1 al valor máximo actual
+    SELECT @nuevoIDFavorito = ISNULL(MAX(ID_FAVORITO), 0) + 1 FROM LUGARESFAVORITOS;
+
     -- Verificamos si el lugar ya está marcado como favorito por el usuario
     IF NOT EXISTS (SELECT 1 FROM LUGARESFAVORITOS WHERE ID_USUARIO = @idusuario AND ID_LUGAR = @idlugar)
     BEGIN
-        -- Insertamos el nuevo favorito sin especificar ID_FAVORITO porque es autoincrementable
-        INSERT INTO LUGARESFAVORITOS (ID_USUARIO, ID_LUGAR, FECHADEVISITA_LUGAR, IMAGEN_LUGAR, NOMBRE_LUGAR, 
+        -- Insertamos el nuevo favorito con el nuevo ID_FAVORITO
+        INSERT INTO LUGARESFAVORITOS (ID_FAVORITO, ID_USUARIO, ID_LUGAR, FECHADEVISITA_LUGAR, IMAGEN_LUGAR, NOMBRE_LUGAR, 
                                       DESCRIPCION_LUGAR, UBICACION_LUGAR, TIPO_LUGAR)
-        VALUES (@idusuario, @idlugar, @fecha, @imagen, @nombre, @descripcion, @ubicacion, @tipo);
+        VALUES (@nuevoIDFavorito, @idusuario, @idlugar, @fecha, @imagen, @nombre, @descripcion, @ubicacion, @tipo);
     END
     ELSE
     BEGIN
@@ -532,6 +537,7 @@ BEGIN
     END
 END
 GO
+
 
 
 
@@ -665,7 +671,7 @@ WHERE
 
 
 
-	CREATE OR ALTER VIEW VISTA_USUARIOS_SEGUIDOS_PERFIL AS
+CREATE OR ALTER VIEW VISTA_USUARIOS_SEGUIDOS_PERFIL AS
 SELECT
     S.ID_USUARIO_SEGUIDOR,
     S.ID_USUARIO_SEGUIDO,
@@ -678,10 +684,15 @@ JOIN
     USUARIOS U ON S.ID_USUARIO_SEGUIDO = U.ID_USUARIO;
 GO
 
+select * from VISTA_USUARIOS_SEGUIDOS_PERFIL 
+
+
+
 CREATE OR ALTER PROCEDURE SP_SEGUIDORES_BY_USUARIO
     @idusuario INT
 AS
 BEGIN
+    -- Seleccionar los usuarios seguidos desde la vista, filtrando por ID_USUARIO_SEGUIDOR
     SELECT
         ID_USUARIO_SEGUIDOR,
         ID_USUARIO_SEGUIDO,
@@ -694,4 +705,30 @@ BEGIN
         ID_USUARIO_SEGUIDOR = @idusuario;
 END
 GO
+
 EXEC SP_SEGUIDORES_BY_USUARIO 1
+
+select * from LUGARESFAVORITOS where ID_USUARIO=1
+select * from COMENTARIOS
+
+CREATE OR ALTER PROCEDURE SP_ADD_SEGUIR
+    @idusuarioseguidor INT,
+    @idusuarioseguido INT,
+    @fechaseguimiento DATETIME
+AS
+BEGIN
+    DECLARE @ID_SEGUIDOR INT;
+
+    -- Insertar el registro de seguimiento
+    INSERT INTO SEGUIDORES (ID_USUARIO_SEGUIDOR, ID_USUARIO_SEGUIDO, FECHA_SEGUIMIENTO)
+    VALUES (@idusuarioseguidor, @idusuarioseguido, @fechaseguimiento);
+
+    -- Obtener el ID del nuevo registro insertado
+    SET @ID_SEGUIDOR = SCOPE_IDENTITY();
+
+    -- Retornar el ID del seguidor insertado (opcional, si se necesita este valor)
+    SELECT @ID_SEGUIDOR AS ID_SEGUIDOR;
+END;
+
+
+select * from SEGUIDORES where ID_USUARIO_SEGUIDOR = 1
