@@ -63,5 +63,28 @@ namespace ViajesMvcNetCore.Controllers
             return PartialView("_Lugares", lugares);
 
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Seguir(int idSeguido)
+        {
+            var idSeguidor = HttpContext.Session.GetInt32("IdUsuario");
+
+            if (idSeguidor == null || idSeguido == 0 || idSeguidor == idSeguido)
+            {
+                return RedirectToAction("Index"); // Si no es válido, redirigir al inicio
+            }
+
+            var seguidor = new Seguidor
+            {
+                IdUsuarioSeguidor = idSeguidor.Value,
+                IdUsuarioSeguido = idSeguido,
+                FechaSeguimiento = DateTime.Now
+            };
+
+            await repo.AddSeguidorAsync(seguidor);
+
+            return RedirectToAction("PerfilUser", new { idusuario = idSeguido });
+        }
+
     }
 }

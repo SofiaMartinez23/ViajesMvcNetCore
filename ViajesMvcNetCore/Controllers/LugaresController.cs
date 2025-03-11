@@ -113,42 +113,7 @@ namespace ViajesMvcNetCore.Controllers
             return PartialView("_Comentarios", comentarios);
         }
 
-        public async Task<IActionResult> EditComentario(int idComentario)
-        {
-            // Obtener el comentario por id
-            var comentario = await this.context.Comentarios.FindAsync(idComentario);
-
-            if (comentario == null)
-            {
-                return NotFound();
-            }
-
-            // Solo lo mostramos en la vista si es válido
-            return View(comentario);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EditComentario(Comentario comentario)
-        {
-
-                comentario.FechaComentario = DateTime.Now;
-
-                await repo.UpdateComentarioAsync(comentario.IdComentario, comentario.IdLugar,
-                    comentario.IdUsuario, comentario.Comentarios, comentario.FechaComentario);
-
-                if (HttpContext.Session.GetInt32("IdUsuario") != null)
-                {
-                    return RedirectToAction("Perfil", new { id = HttpContext.Session.GetInt32("IdUsuario") });
-                }
-                else
-                {
-                    return RedirectToAction("Login", "Home");
-                }
-            
-
-            return View(comentario);
-        }
-
+        
         [HttpPost]
         public async Task<IActionResult> DeleteComentario(int idComentario, int idLugar)
         {

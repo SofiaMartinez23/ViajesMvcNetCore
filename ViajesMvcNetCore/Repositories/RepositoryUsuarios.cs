@@ -49,6 +49,19 @@ namespace ViajesMvcNetCore.Repositories
 
             return lugares;
         }
+        public async Task AddSeguidorAsync(Seguidor seguidor)
+        {
+            // Llamar al procedimiento almacenado SP_ADD_SEGUIR
+            string sql = "EXEC SP_ADD_SEGUIR @idusuarioseguidor, @idusuarioseguido, @fechaseguimiento";
+
+            await context.Database.ExecuteSqlRawAsync(sql,
+                new SqlParameter("@idusuarioseguidor", seguidor.IdUsuarioSeguidor),
+                new SqlParameter("@idusuarioseguido", seguidor.IdUsuarioSeguido),
+                new SqlParameter("@fechaseguimiento", seguidor.FechaSeguimiento)
+            );
+        }
+
+
 
     }
 }

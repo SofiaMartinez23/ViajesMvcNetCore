@@ -132,20 +132,6 @@ namespace ViajesMvcNetCore.Repositories
             );
         }
 
-
-        public async Task UpdateComentarioAsync(int idComentario, int idLugar, int idUsuario, string comentario, DateTime fechaComentario)
-        {
-            string sql = "EXEC SP_UPDATE_COMENTARIO @id_comentario, @id_lugar, @id_usuario, @comentario, @fecha_comentario";
-
-            await context.Database.ExecuteSqlRawAsync(sql,
-                new SqlParameter("@id_comentario", idComentario),
-                new SqlParameter("@id_lugar", idLugar),
-                new SqlParameter("@id_usuario", idUsuario),
-                new SqlParameter("@comentario", comentario),
-                new SqlParameter("@fecha_comentario", fechaComentario)
-            );
-        }
-
         public async Task<List<Lugar>> GetLugaresPorTipoAsync(string tipo)
         {
             var lugares = await this.context.Lugares
