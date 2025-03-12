@@ -324,9 +324,25 @@ namespace AvatarDinamicoPersonalizado.Controllers
 
         public async Task<IActionResult> _Seguidos(int idusuario)
         {
-
             List<UsuarioSeguidoPerfil> seguido = await this.repo.GetSeguidoresUsuarioAsync(idusuario);
             return PartialView("_Seguidos", seguido);
         }
+
+
+        public async Task<IActionResult> DejarDeSeguir(int idSeguido)
+        {
+            var idSeguidor = HttpContext.Session.GetInt32("IdUsuario");
+
+            if (idSeguidor == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            await this.repo.DeleteSeguidorAsync(idSeguidor.Value, idSeguido);
+
+            return RedirectToAction("Index");
+        }
+
+
     }
 }

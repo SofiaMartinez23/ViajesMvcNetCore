@@ -85,12 +85,21 @@ namespace ViajesMvcNetCore.Repositories
             );
 
         }
+        public async Task DeleteSeguidorAsync(int idUsuarioSeguidor, int idUsuarioSeguido)
+        {
+            string sql = "EXEC SP_DELETE_SEGUIDOR @idusuarioseguidor, @idusuarioseguido";
 
+            await context.Database.ExecuteSqlRawAsync(sql,
+                new SqlParameter("@idusuarioseguidor", idUsuarioSeguidor),
+                new SqlParameter("@idusuarioseguido", idUsuarioSeguido)
+            );
+        }
         public async Task<List<UsuarioSeguidoPerfil>> GetSeguidoresUsuarioAsync(int idusuario)
         {
+            var user = new List<UsuarioSeguidoPerfil>();
             string sql = "EXEC SP_SEGUIDORES_BY_USUARIO @idusuario";
 
-            var user = await this.context.UsuarioSeguidoPerfiles
+            user = await this.context.UsuarioSeguidoPerfiles
                 .FromSqlRaw(sql, new SqlParameter("@idusuario", idusuario))
                 .ToListAsync();
 

@@ -5,14 +5,22 @@
     @foreach (var seguido in Model)
     {
         <div class="seguidor-item">
-          
+
             <img src="@seguido.ImagenSeguido" alt="@seguido.NombreSeguido" class="seguidor-avatar" />
             <p>@seguido.NombreSeguido</p>
 
-            <a asp-controller="Usuarios" asp-action="PerfilUser" asp-route-idusuario="@seguido.IdUsuarioSeguido" class="btn btn-outline-primary">
-                <i class="fi fi-rr-interrogation"></i>  <!-- Asegúrate de que el icono se vea con un tamaño adecuado -->
+            <!-- Enlace al perfil del usuario seguido -->
+            <a asp-controller="Usuarios" asp-action="PerfilUser" asp-route-idusuario="@seguido.IdUsuarioSeguido">
+                <img src="https://e7.pngegg.com/pngimages/649/536/png-clipart-crop-supply-computer-icons-blog-info-infographic-text.png" style="height:23px; width:23px" />
             </a>
 
+            <!-- Botón para dejar de seguir -->
+            <form asp-controller="Usuarios" asp-action="DejarDeSeguir" method="post" style="display:inline;">
+                <input type="hidden" name="idSeguido" value="@seguido.IdUsuarioSeguido" />
+                <button type="submit">
+                    <img src="https://w7.pngwing.com/pngs/36/901/png-transparent-cancel-disconnect-unfollow-user-block-unroll-unsubscribe-pinpoint-interface-i-icon-thumbnail.png" style="height:23px; width:23px" />
+                </button>
+            </form>
         </div>
     }
 }
@@ -20,5 +28,3 @@ else
 {
     <p>No has seguido a ningún usuario aún.</p>
 }
-
-

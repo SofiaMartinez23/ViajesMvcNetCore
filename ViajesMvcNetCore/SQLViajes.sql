@@ -719,16 +719,27 @@ AS
 BEGIN
     DECLARE @ID_SEGUIDOR INT;
 
-    -- Insertar el registro de seguimiento
-    INSERT INTO SEGUIDORES (ID_USUARIO_SEGUIDOR, ID_USUARIO_SEGUIDO, FECHA_SEGUIMIENTO)
-    VALUES (@idusuarioseguidor, @idusuarioseguido, @fechaseguimiento);
+    -- Obtener el valor actual máximo de ID_SEGUIDOR y aumentarlo en 1
+    SELECT @ID_SEGUIDOR = ISNULL(MAX(ID_SEGUIDOR), 0) + 1 FROM SEGUIDORES;
 
-    -- Obtener el ID del nuevo registro insertado
-    SET @ID_SEGUIDOR = SCOPE_IDENTITY();
+    -- Insertar el registro de seguimiento con el nuevo ID_SEGUIDOR
+    INSERT INTO SEGUIDORES (ID_SEGUIDOR, ID_USUARIO_SEGUIDOR, ID_USUARIO_SEGUIDO, FECHA_SEGUIMIENTO)
+    VALUES (@ID_SEGUIDOR, @idusuarioseguidor, @idusuarioseguido, @fechaseguimiento);
 
     -- Retornar el ID del seguidor insertado (opcional, si se necesita este valor)
     SELECT @ID_SEGUIDOR AS ID_SEGUIDOR;
 END;
 
+CREATE OR ALTER PROCEDURE SP_DELETE_SEGUIDOR
+    (@idusuarioseguidor INT, @idusuarioseguido INT)
+AS
+BEGIN
+    DELETE FROM SEGUIDORES
+    WHERE ID_USUARIO_SEGUIDOR = @idusuarioseguidor 
+      AND ID_USUARIO_SEGUIDO = @idusuarioseguido;
+END;
+EXEC SP_DELETE_SEGUIDOR @idusuarioseguidor = 1, @idusuarioseguido = 3;
 
-select * from SEGUIDORES where ID_USUARIO_SEGUIDOR = 1
+
+select * from VISTA_USUARIOS_SEGUIDOS_PERFIL where ID_USUARIO_SEGUIDOR = 6
+select * from LUGARESFAVORITOS where ID_USUARIO = 1

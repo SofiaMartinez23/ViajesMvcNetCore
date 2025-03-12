@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 using ViajesMvcNetCore.Data;
 using ViajesMvcNetCore.Models;
 using ViajesMvcNetCore.Repositories;
@@ -63,7 +64,6 @@ namespace ViajesMvcNetCore.Controllers
             return PartialView("_Lugares", lugares);
 
         }
-
         [HttpPost]
         public async Task<IActionResult> Seguir(int idSeguido)
         {
@@ -71,9 +71,19 @@ namespace ViajesMvcNetCore.Controllers
 
             if (idSeguidor == null || idSeguido == 0 || idSeguidor == idSeguido)
             {
-                return RedirectToAction("Index"); // Si no es válido, redirigir al inicio
+                return RedirectToAction("Index");
             }
 
+            // Verificar si ya está siguiendo a la persona
+            var yaSigue = await repo.ExisteSeguidorAsync(idSeguidor.Value, idSeguido);
+
+            if (yaSigue)
+            {
+                // Aquí podrías redirigir al perfil o mostrar un mensaje indicando que ya sigue al usuario
+                return RedirectToAction("PerfilUser", new { idusuario = idSeguido });
+            }
+
+            // Crear el nuevo seguidor
             var seguidor = new Seguidor
             {
                 IdUsuarioSeguidor = idSeguidor.Value,
@@ -83,8 +93,8 @@ namespace ViajesMvcNetCore.Controllers
 
             await repo.AddSeguidorAsync(seguidor);
 
+            // Redirigir al perfil del usuario seguido
             return RedirectToAction("PerfilUser", new { idusuario = idSeguido });
-        }
-
+        } 
     }
 }

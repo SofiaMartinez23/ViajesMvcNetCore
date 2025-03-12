@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Usuarios";
     Layout = "_Layout";
-    // Ejemplo de configuración de sesión en el controlador
     string defaultImageUrl = "https://cdn3d.iconscout.com/3d/premium/thumb/chico-avatar-6299533-5187865.png?f=webp";
 }
 
@@ -39,11 +38,16 @@
                     <div class="card-footer text-center">
                         <p>
                             <a asp-controller="Usuarios" asp-action="PerfilUser" asp-route-idusuario="@usuario.IdUsuario" class="btn btn-outline-primary">Ver Perfil</a>
-                            <a id="follow-@usuario.IdUsuario" class="follow-link ms-2" data-usuarioid="@usuario.IdUsuario">
-                                <span class="like">
-                                    <i class="fab fa-gratipay heart-icon"></i>Seguir
-                                </span>
-                            </a>
+
+                            <!-- Formulario para seguir al usuario -->
+                            <form method="post" action="/Usuarios/Seguir">
+                                <input type="hidden" name="idSeguido" value="@usuario.IdUsuario" />
+                                <button type="submit" class="follow-button ms-2 btn btn-outline-secondary">
+                                    <span class="like">
+                                        <i class="fab fa-gratipay heart-icon"></i> Seguir
+                                    </span>
+                                </button>
+                            </form>
                         </p>
                         <p class="txt3"><i class="far fa-calendar"></i> Fecha de registro: @usuario.FechaRegistro.ToString("dd/MM/yyyy")</p>
                     </div>
@@ -76,34 +80,5 @@
             }
         });
     });
-
-    // Funcionalidad de "seguir" (cambiar el color del corazón al hacer clic)
-            $(document).ready(function() {
-        $('.follow-link').click(function() {
-            var usuarioId = $(this).data('usuarioid');
-            var idUsuarioSeguidor = $(this).data('idusuario'); // Obtener el IdUsuarioSeguidor de los datos del enlace
-
-            $.ajax({
-                url: '/Usuarios/Seguir',  // URL de la acción en el controlador
-                type: 'POST',
-                data: {
-                    idUsuarioSeguidor: idUsuarioSeguidor,
-                    idUsuarioSeguido: usuarioId
-                }, // Enviar datos directamente en el body
-                success: function(response) {
-                    if (response.success) {
-                        alert('Ahora sigues a este usuario!');
-                        $('#follow-' + usuarioId + ' .heart-icon').css('color', 'red'); // Cambiar el color del icono
-                    } else {
-                        alert('Ya estás siguiendo a este usuario.');
-                    }
-                },
-                error: function() {
-                    alert('Hubo un error al intentar seguir al usuario.');
-                }
-            });
-        });
-    });
-
 
 </script>

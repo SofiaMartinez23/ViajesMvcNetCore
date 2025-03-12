@@ -51,7 +51,7 @@ namespace ViajesMvcNetCore.Repositories
         }
         public async Task AddSeguidorAsync(Seguidor seguidor)
         {
-            // Llamar al procedimiento almacenado SP_ADD_SEGUIR
+            
             string sql = "EXEC SP_ADD_SEGUIR @idusuarioseguidor, @idusuarioseguido, @fechaseguimiento";
 
             await context.Database.ExecuteSqlRawAsync(sql,
@@ -60,7 +60,11 @@ namespace ViajesMvcNetCore.Repositories
                 new SqlParameter("@fechaseguimiento", seguidor.FechaSeguimiento)
             );
         }
-
+        public async Task<bool> ExisteSeguidorAsync(int idUsuarioSeguidor, int idUsuarioSeguido)
+        {
+            return await this.context.UsuarioSeguidoPerfiles
+                .AnyAsync(s => s.IdUsuarioSeguidor == idUsuarioSeguidor && s.IdUsuarioSeguido == idUsuarioSeguido);
+        }
 
 
     }
