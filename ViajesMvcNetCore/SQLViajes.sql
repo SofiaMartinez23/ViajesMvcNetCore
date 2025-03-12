@@ -741,5 +741,5 @@ END;
 EXEC SP_DELETE_SEGUIDOR @idusuarioseguidor = 1, @idusuarioseguido = 3;
 
 
-select * from VISTA_USUARIOS_SEGUIDOS_PERFIL where ID_USUARIO_SEGUIDOR = 6
+select * from VISTA_USUARIOS_SEGUIDOS_PERFIL where ID_USUARIO_SEGUIDOR = 5
 select * from LUGARESFAVORITOS where ID_USUARIO = 1
