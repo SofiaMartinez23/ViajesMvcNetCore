@@ -23,7 +23,7 @@
                     </div>
                     <div class="card-footer d-flex justify-content-between align-items-center bg-white">
                         <a asp-controller="Lugares" asp-action="Details" asp-route-idlugar="@lugar.IdLugar" class="btn btn-primary btn-sm">Read More</a>
-                        <a id="heart-@lugar.IdLugar" class="heart-link" data-id="@lugar.IdLugar">
+                        <a id="heart-@lugar.IdLugar" class="heart-link" data-id="@lugar.IdLugar" data-name="@lugar.NombreLugar">
                             <img src="https://icon-icons.com/icons2/3870/PNG/512/save_remove_icon_243831.png" alt="Delete" class="heart-icon" />
                         </a>
                     </div>
@@ -48,163 +48,212 @@
             e.preventDefault();
 
             var idLugar = $(this).data('id');
+            var lugarName = $(this).data('name');
             var card = $(this).closest('.col');
 
-            if (confirm('¿Estás seguro de que deseas eliminar de favoritos?')) {
-                $.post('/Home/DeleteFavorito', { idLugar: idLugar }, function () {
-                    card.fadeOut(300, function() {
-                        $(this).remove(); // Elimina la tarjeta con animación
+            // Usar SweetAlert2 en lugar de confirm
+            Swal.fire({
+                title: '¿Eliminar de favoritos?',
+                text: `¿Estás seguro de que deseas eliminar "${lugarName}" de tus favoritos?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('/Home/DeleteFavorito', { idLugar: idLugar }, function () {
+                        // Animación de desvanecimiento al eliminar
+                        card.fadeOut(300, function() {
+                            $(this).remove();
+
+                            // Mostrar mensaje de éxito con SweetAlert
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Eliminado!',
+                                text: 'El lugar ha sido eliminado de tus favoritos.',
+                                timer: 2000,
+                                timerProgressBar: true,
+                                showConfirmButton: false
+                            });
+                        });
+                    }).fail(function() {
+                        // Mensaje de error con SweetAlert
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'No se pudo eliminar el favorito. Intenta nuevamente.'
+                        });
                     });
-                }).fail(function() {
-                    alert('Error al eliminar el favorito.');
-                });
-            }
+                }
+            });
         });
     });
 </script>
 
 <style>
-:root {
-    --primary-color: #4a6fa5;
-    --secondary-color: #6c8fb8;
-    --accent-color: #ff6b6b;
-    --text-primary: #333333;
-    --text-secondary: #666666;
-    --light-bg: #f8f9fa;
-    --card-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    --hover-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    --transition-speed: 0.3s;
-}
+    :root {
+        --primary-color: #4a6fa5;
+        --secondary-color: #6c8fb8;
+        --accent-color: #ff6b6b;
+        --text-primary: #333333;
+        --text-secondary: #666666;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        --hover-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        --transition-speed: 0.3s;
+    }
 
-body {
-    background-color: var(--light-bg);
-    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-}
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
 
-.container {
-    max-width: 1200px;
-}
+    .container {
+        max-width: 1200px;
+    }
 
-/* Card Styles */
-.lugar-card {
-    border: none;
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all var(--transition-speed) ease;
-}
+    /* Card Styles */
+    .lugar-card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all var(--transition-speed) ease;
+    }
 
-.lugar-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--hover-shadow);
-}
+        .lugar-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
 
-.photo-container {
-    height: 200px;
-}
+    .photo-container {
+        height: 200px;
+    }
 
-.card-img-top {
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
+    .card-img-top {
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
 
-.lugar-card:hover .card-img-top {
-    transform: scale(1.05);
-}
+    .lugar-card:hover .card-img-top {
+        transform: scale(1.05);
+    }
 
-.overlay-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    z-index: 2;
-}
+    .overlay-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 2;
+    }
 
-.badge {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-weight: 500;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
 
-.card-body {
-    padding: 1.5rem;
-}
+    .card-body {
+        padding: 1.5rem;
+    }
 
-.card-title {
-    font-weight: 700;
-    font-size: 1.25rem;
-    color: var(--primary-color);
-    margin-bottom: 10px;
-}
+    .card-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
 
-.card-location {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-}
+    .card-location {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
 
-.location-icon {
-    color: var(--accent-color);
-    margin-right: 5px;
-}
+    .location-icon {
+        color: var(--accent-color);
+        margin-right: 5px;
+    }
 
-.card-description {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
+    .card-description {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 
-.card-footer {
-    border-top: 1px solid rgba(0,0,0,0.05);
-    padding: 1rem 1.5rem;
-}
+    .card-footer {
+        border-top: 1px solid rgba(0,0,0,0.05);
+        padding: 1rem 1.5rem;
+    }
 
-.btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    border-radius: 30px;
-    padding: 6px 16px;
-    font-weight: 500;
-    transition: all var(--transition-speed) ease;
-}
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        border-radius: 30px;
+        padding: 6px 16px;
+        font-weight: 500;
+        transition: all var(--transition-speed) ease;
+    }
 
-.btn-primary:hover {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
-    transform: translateY(-2px);
-}
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
 
-.heart-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all var(--transition-speed) ease;
-}
+    .heart-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all var(--transition-speed) ease;
+        cursor: pointer;
+    }
 
-.heart-link:hover {
-    transform: scale(1.1);
-}
+        .heart-link:hover {
+            transform: scale(1.1);
+        }
 
-.heart-icon {
-    width: 20px;
-    height: 20px;
-}
+    .heart-icon {
+        width: 20px;
+        height: 20px;
+    }
 
-.date-badge {
-    position: absolute;
-    bottom: 75px;
-    right: 15px;
-    background-color: rgba(255,255,255,0.9);
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
+    .date-badge {
+        position: absolute;
+        bottom: 75px;
+        right: 15px;
+        background-color: rgba(255,255,255,0.9);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    /* SweetAlert Customization */
+    .swal2-popup {
+        border-radius: 15px;
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    .swal2-title {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .swal2-html-container {
+        color: var(--text-secondary);
+    }
+
+    .swal2-icon {
+        border-color: var(--accent-color);
+    }
 </style>

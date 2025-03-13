@@ -75,7 +75,7 @@
 
                                     <form method="post" action="/Usuarios/Seguir" class="ms-2">
                                         <input type="hidden" name="idSeguido" value="@usuario.IdUsuario" />
-                                        <button type="submit" class="btn btn-outline-primary rounded-pill follow-btn">
+                                        <button type="submit" class="btn btn-outline-primary rounded-pill follow-btn" data-id="@usuario.IdUsuario">
                                             <i class="fas fa-user-plus"></i>
                                         </button>
                                     </form>
@@ -143,12 +143,12 @@
 
     .avatar-wrapper {
         position: absolute;
-        bottom: 0px; /* Baja más la imagen para que se vea más grande */
+        bottom: 0px;
         left: 50%;
         transform: translateX(-50%);
-        width: 120px; /* Hacemos la imagen un poco más grande */
-        height: 120px; /* Hacemos la imagen cuadrada */
-        border-radius: 10%; /* Bordes redondeados */
+        width: 120px;
+        height: 120px;
+        border-radius: 10%;
         background-color: white;
         display: flex;
         align-items: center;
@@ -195,7 +195,7 @@
         font-size: 0.85rem;
     }
 </style>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -214,66 +214,69 @@
             });
         }
 
-        // Animación para botón de seguir
-        $(".follow-btn").click(function() {
+        // Confirmación SweetAlert para seguir o dejar de seguir
+        $(".follow-btn").click(function(e) {
+            e.preventDefault();
             const button = $(this);
+            const userId = button.data("id");
+            let followedUsers = JSON.parse(localStorage.getItem("followedUsers")) || [];
 
-            // Cambiar visualmente el botón después de hacer clic
-            button.html('<i class="fas fa-check"></i>');
-            button.removeClass('btn-outline-primary').addClass('btn-success');
+            // Si el usuario ya está seguido
+            if (followedUsers.includes(userId)) {
+                // Confirmación para dejar de seguir
+                Swal.fire({
+                    title: '¿Quieres dejar de seguir a este usuario?',
+                    text: "¡Ya no verás sus actualizaciones!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, dejar de seguir',
+                    cancelButtonText: 'No, cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Eliminar el usuario de los seguidos
+                        followedUsers = followedUsers.filter(id => id !== userId);
+                        localStorage.setItem("followedUsers", JSON.stringify(followedUsers));
 
-            // Este evento será manejado por el servidor, pero agregamos una animación visual
-            // inmediata para mejor experiencia de usuario
+                        // Cambiar el icono visualmente a "Seguir"
+                        button.html('<i class="fas fa-user-plus"></i>');
+                        button.removeClass('btn-success').addClass('btn-outline-primary');
+                    }
+                });
+            } else {
+                // Confirmación para seguir
+                Swal.fire({
+                    title: '¿Quieres seguir a este usuario?',
+                    text: "¡Estás a punto de seguir a este usuario!",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, seguir',
+                    cancelButtonText: 'No, cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Añadir el usuario a la lista de seguidos
+                        followedUsers.push(userId);
+                        localStorage.setItem("followedUsers", JSON.stringify(followedUsers));
 
-            // Nota: Esto es solo visual, la lógica real de seguir al usuario la maneja tu
-            // controlador al enviar el formulario
+                        // Cambiar el icono visualmente a un "tic"
+                        button.html('<i class="fas fa-check"></i>');
+                        button.removeClass('btn-outline-primary').addClass('btn-success');
+
+                        // Enviar el formulario para registrar el seguimiento en la base de datos
+                        button.closest("form").submit(); // Esto envía el formulario
+                    }
+                });
+            }
         });
 
-        // Mensaje de notificación para cuando se sigue a un usuario
-        // (Esta parte sería ideal integrarla con mensajes TempData desde el controlador)
-        function showFollowNotification(message, userName) {
-            // Crear y mostrar notificación
-            const notification = $(`
-                <div class="toast-notification bg-success text-white px-4 py-3 rounded-3 shadow-lg">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-check-circle me-2"></i>
-                        <div>${message} <strong>${userName}</strong></div>
-                    </div>
-                </div>
-            `);
-
-            // Añadir al DOM
-            $('body').append(notification);
-
-            // Posicionar
-            notification.css({
-                position: 'fixed',
-                bottom: '20px',
-                right: '20px',
-                zIndex: 9999,
-                opacity: 0,
-                transform: 'translateY(20px)'
+        // Marcar los usuarios seguidos desde el localStorage al cargar
+        let followedUsers = JSON.parse(localStorage.getItem("followedUsers")) || [];
+        followedUsers.forEach(function(userId) {
+            $(".follow-btn[data-id='" + userId + "']").each(function() {
+                $(this).html('<i class="fas fa-check"></i>');
+                $(this).removeClass('btn-outline-primary').addClass('btn-success');
             });
-
-            // Animar entrada
-            setTimeout(function() {
-                notification.css({
-                    transition: 'all 0.3s ease',
-                    opacity: 1,
-                    transform: 'translateY(0)'
-                });
-            }, 10);
-
-            // Desaparecer después de 3 segundos
-            setTimeout(function() {
-                notification.css({
-                    opacity: 0,
-                    transform: 'translateY(20px)'
-                });
-                setTimeout(function() {
-                    notification.remove();
-                }, 300);
-            }, 3000);
-        }
+        });
     });
 </script>

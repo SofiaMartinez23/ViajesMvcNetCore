@@ -1,86 +1,99 @@
-﻿@model List<LugarFavorito>
+﻿@model List<Lugar>
 @{
     string defaultImageUrl = "https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-rocas_23-2150800507.jpg";
 }
 
-<div class="container py-5">
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="placesContainer">
-        @foreach (var lugar in Model)
-        {
-            <div class="col">
-                <div class="card lugar-card shadow border-0 hover-card h-100">
-                    <div class="lugar-image-container position-relative overflow-hidden">
-                        <img src="@(string.IsNullOrEmpty(lugar.ImagenLugar) ? defaultImageUrl : lugar.ImagenLugar)"
-                             alt="@lugar.NombreLugar" class="card-img-top lugar-image"
-                             onerror="this.src='@defaultImageUrl';" />
-                        <div class="lugar-overlay position-absolute top-0 start-0 p-2">
-                            <span class="badge bg-primary">Favorito</span>
-                        </div>
+<div class="row g-4" id="placesContainer">
+    @foreach (var lugar in Model)
+    {
+        <div class="col-md-6 col-lg-4 lugar-item">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+                <div class="lugar-image-container">
+                    <img src="@(string.IsNullOrEmpty(lugar.Imagen) ? defaultImageUrl : lugar.Imagen)"
+                         alt="@lugar.Nombre" class="card-img-top lugar-image"
+                         onerror="this.src='@defaultImageUrl';" />
+                    <div class="lugar-overlay">
+                        <span class="badge bg-primary">Lugar</span>
                     </div>
-                    <div class="card-body">
-                        <h5 class="card-title mb-1 fw-bold text-primary">@lugar.NombreLugar</h5>
-                        <p class="card-subtitle mb-2 text-muted">
-                            <i class="fas fa-map-marker-alt me-1"></i>@lugar.UbicacionLugar
-                        </p>
-                        <p class="card-text lugar-description">@lugar.DescripcionLugar</p>
-                    </div>
-                    <div class="card-footer bg-white border-0">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">
-                                <i class="far fa-calendar-alt me-1"></i>@lugar.FechaDeVisitaLugar
-                            </small>
-                            <a asp-controller="Lugares" asp-action="Details" asp-route-idlugar="@lugar.IdLugar"
-                               class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                                Leer más
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title mb-1 fw-bold text-primary">@lugar.Nombre</h5>
+                    <p class="card-subtitle mb-2 text-muted">
+                        <i class="fas fa-map-marker-alt me-1"></i>@lugar.Ubicacion
+                    </p>
+                    <p class="card-text lugar-description">@lugar.Descripcion</p>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3 mb-2">
+                        <small class="text-muted">
+                            <i class="far fa-clock me-1"></i>@lugar.Horario
+                        </small>
+                        <div class="action-buttons">
+                            <a asp-controller="Home" asp-action="EditLugar" asp-route-idLugar="@lugar.IdLugar"
+                               class="btn btn-sm btn-outline-primary rounded-circle action-btn" title="Editar">
+                                <i class="fas fa-pencil-alt"></i>
                             </a>
-                        </div>
-                        <div class="d-flex justify-content-end mt-3">
-                            <a id="heart-@lugar.IdLugar" class="heart-link" data-id="@lugar.IdLugar" title="Eliminar de favoritos">
-                                <img src="https://icon-icons.com/icons2/3870/PNG/512/save_remove_icon_243831.png" alt="Delete" class="heart-icon" />
+                            <a href="#" class="btn btn-sm btn-outline-danger rounded-circle action-btn ms-2 delete-lugar"
+                               data-id="@lugar.IdLugar" data-name="@lugar.Nombre" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
                             </a>
                         </div>
                     </div>
                 </div>
+                <div class="card-footer bg-white pt-0 border-0">
+                    <a asp-controller="Lugares" asp-action="Details" asp-route-idlugar="@lugar.IdLugar"
+                       class="btn btn-primary w-100 rounded-pill">
+                        Ver más
+                    </a>
+                </div>
             </div>
-        }
-    </div>
+        </div>
+    }
 </div>
 
-<!-- SweetAlert2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.27/dist/sweetalert2.min.css" rel="stylesheet">
-<!-- SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.27/dist/sweetalert2.min.js"></script>
+<!-- Incluir SweetAlert2 desde CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    $(document).ready(function() {
-        $('.heart-link').click(function(e) {
+    $(document).ready(function () {
+        // Eliminar lugar con SweetAlert
+        $('.delete-lugar').click(function (e) {
             e.preventDefault();
 
             var idLugar = $(this).data('id');
-            var card = $(this).closest('.col');
+            var lugarName = $(this).data('name');
+            var card = $(this).closest('.lugar-item');
 
-            // Usar SweetAlert para la confirmación
             Swal.fire({
                 title: '¿Estás seguro?',
-                text: '¿Quieres eliminar este lugar de tus favoritos?',
+                text: `¿Deseas eliminar el lugar "${lugarName}"?`,
                 icon: 'warning',
                 showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
                 confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true // Cambiar el orden de los botones
+                cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Si el usuario confirma, proceder a eliminar
-                    $.post('/Home/DeleteFavorito', { idLugar: idLugar }, function () {
-                        card.fadeOut(300, function () {
-                            $(this).remove(); // Elimina la tarjeta con animación
+                    $.post('/Home/DeleteConfirmed', { idLugar: idLugar }, function (response) {
+                        // Animación de desvanecimiento al eliminar
+                        card.fadeOut(300, function() {
+                            $(this).remove();
+
+                            // Mostrar mensaje de éxito
+                            Swal.fire(
+                                '¡Eliminado!',
+                                'El lugar ha sido eliminado correctamente.',
+                                'success'
+                            );
                         });
-                    }).fail(function () {
-                        Swal.fire('Error', 'Error al eliminar el favorito.', 'error');
+                    }).fail(function() {
+                        // Manejo de errores
+                        Swal.fire(
+                            'Error',
+                            'No se pudo eliminar el lugar. Intenta nuevamente.',
+                            'error'
+                        );
                     });
-                } else {
-                    // Si el usuario cancela, no hacer nada
-                    Swal.fire('Cancelado', 'El lugar sigue en tus favoritos', 'info');
                 }
             });
         });
@@ -88,44 +101,31 @@
 </script>
 
 <style>
-    :root {
-        --primary-color: #007bff;
-        --secondary-color: #6c757d;
-        --danger-color: #dc3545;
-        --text-primary: #333333;
-        --text-secondary: #666666;
-        --light-bg: #f8f9fa;
-        --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        --hover-shadow: 0 8px 16px rgba(0,0,0,0.2);
-        --transition-speed: 0.3s;
-    }
-
+    /* Estilos generales */
     body {
-        background-color: var(--light-bg);
-        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        background-color: #f8f9fa;
     }
 
-    .container {
-        max-width: 1200px;
+    /* Estilos para las tarjetas */
+    .lugar-item {
+        transition: transform 0.3s ease;
     }
 
-    /* Card Styles */
-    .lugar-card {
-        transition: all var(--transition-speed) ease;
-        border-radius: 8px;
+    .hover-card {
+        border-radius: 10px;
         overflow: hidden;
-        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
     }
 
-        .lugar-card:hover {
+        .hover-card:hover {
             transform: translateY(-5px);
-            box-shadow: var(--hover-shadow);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
         }
 
     .lugar-image-container {
         position: relative;
-        overflow: hidden;
         height: 200px;
+        overflow: hidden;
     }
 
     .lugar-image {
@@ -143,66 +143,75 @@
         position: absolute;
         top: 15px;
         left: 15px;
-        z-index: 2;
-    }
-
-    .badge {
-        font-weight: 500;
     }
 
     .card-title {
         font-weight: 700;
         font-size: 1.25rem;
-        color: var(--primary-color);
+        color: #0d6efd;
     }
 
     .card-subtitle {
         font-size: 0.95rem;
-        color: var(--secondary-color);
+        color: #6c757d;
     }
 
-    .card-text {
-        font-size: 1rem;
-        color: var(--text-secondary);
-        line-height: 1.6;
+    .lugar-description {
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        font-size: 0.9rem;
+        color: #6c757d;
+        line-height: 1.6;
+        margin-bottom: 0;
     }
 
     .card-footer {
-        border-top: 1px solid rgba(0,0,0,0.05);
-        padding: 1.2rem;
+        background-color: #fff;
+        padding: 0 1.25rem 1.25rem 1.25rem;
     }
 
-    .btn-outline-primary {
-        border-radius: 20px;
-        border: 2px solid var(--primary-color);
-        color: var(--primary-color);
-        transition: background-color var(--transition-speed), color var(--transition-speed);
-    }
-
-        .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-    .heart-link {
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        padding: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all var(--transition-speed) ease;
-        cursor: pointer;
+        transition: all 0.2s ease;
     }
 
-        .heart-link:hover {
+        .action-btn:hover {
             transform: scale(1.1);
         }
 
-    .heart-icon {
-        width: 20px;
-        height: 20px;
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        padding: 0.5rem 1.5rem;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.25);
+        }
+
+    .action-buttons {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Estilo para SweetAlert */
+    .swal2-popup {
+        border-radius: 15px;
+        font-family: inherit;
+    }
+
+    .swal2-title {
+        font-weight: 600;
     }
 </style>

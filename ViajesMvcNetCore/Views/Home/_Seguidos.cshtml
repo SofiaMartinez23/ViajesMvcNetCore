@@ -1,5 +1,6 @@
 ﻿@model List<UsuarioSeguidoPerfil>
 
+    <h2>Seguidos</h2>
 @if (Model != null && Model.Any())
 {
     @foreach (var seguido in Model)
@@ -29,23 +30,48 @@ else
     <p>No has seguido a ningún usuario aún.</p>
 }
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(document).ready(function() {
         // Manejar el clic del botón "Dejar de seguir"
         $(document).on('click', '.dejar-de-seguir', function(e) {
             e.preventDefault();
-
             var seguidorItem = $(this).closest('.seguidor-item');
             var idSeguido = seguidorItem.data('id-seguido');
 
-            if (confirm('¿Estás seguro de que deseas dejar de seguir a este usuario?')) {
-                $.post('/Home/DejarDeSeguir', { idSeguido: idSeguido }, function() {
-                    // Eliminar el usuario de la vista inmediatamente
-                    seguidorItem.remove();
-                }).fail(function() {
-                    alert('Error al dejar de seguir al usuario.');
-                });
-            }
+            // Mostrar SweetAlert de confirmación
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás volver a seguir a este usuario a menos que lo hagas manualmente!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, dejar de seguir',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Hacer la petición POST para dejar de seguir
+                    $.post('/Home/DejarDeSeguir', { idSeguido: idSeguido }, function() {
+                        // Eliminar el usuario de la vista inmediatamente
+                        seguidorItem.remove();
+
+                        // Mostrar SweetAlert de éxito
+                        Swal.fire(
+                            'Eliminado',
+                            'Has dejado de seguir a este usuario.',
+                            'success'
+                        );
+                    }).fail(function() {
+                        // Mostrar SweetAlert de error
+                        Swal.fire(
+                            'Error',
+                            'Hubo un error al dejar de seguir al usuario.',
+                            'error'
+                        );
+                    });
+                }
+            });
         });
     });
 </script>
