@@ -65,6 +65,13 @@ namespace ViajesMvcNetCore.Repositories
             return await this.context.UsuarioSeguidoPerfiles
                 .AnyAsync(s => s.IdUsuarioSeguidor == idUsuarioSeguidor && s.IdUsuarioSeguido == idUsuarioSeguido);
         }
+        public async Task<List<int>> ObtenerUsuariosSeguidosAsync(int idSeguidor)
+        {
+            return await context.UsuarioSeguidoPerfiles
+                .Where(s => s.IdUsuarioSeguidor == idSeguidor)
+                .Select(s => s.IdUsuarioSeguido)
+                .ToListAsync();
+        }
 
 
     }

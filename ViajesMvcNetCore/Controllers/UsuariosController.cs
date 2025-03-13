@@ -80,7 +80,7 @@ namespace ViajesMvcNetCore.Controllers
             if (yaSigue)
             {
                 // Aquí podrías redirigir al perfil o mostrar un mensaje indicando que ya sigue al usuario
-                return RedirectToAction("PerfilUser", new { idusuario = idSeguido });
+                return RedirectToAction("Index");
             }
 
             // Crear el nuevo seguidor
@@ -94,7 +94,7 @@ namespace ViajesMvcNetCore.Controllers
             await repo.AddSeguidorAsync(seguidor);
 
             // Redirigir al perfil del usuario seguido
-            return RedirectToAction("PerfilUser", new { idusuario = idSeguido });
+            return RedirectToAction("Index");
         } 
     }
 }

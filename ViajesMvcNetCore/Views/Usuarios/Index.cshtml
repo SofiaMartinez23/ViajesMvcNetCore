@@ -6,79 +6,274 @@
     string defaultImageUrl = "https://cdn3d.iconscout.com/3d/premium/thumb/chico-avatar-6299533-5187865.png?f=webp";
 }
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <link href="~/css/usuariosindex.css" rel="stylesheet" />
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="title">@ViewData["Title"]</h1>
-        <div class="d-flex align-items-center">
-            <i class="fas fa-search small-logo m-3"></i>
-            <input type="text" class="form-control search-input" placeholder="Buscar lugares..." id="searchInput">
-        </div>
-    </div>
-
-    <div class="row row-cols-md-3 row-cols-1 g-4" id="usersContainer">
-        @foreach (var usuario in Model)
-        {
-            <div class="col">
-                <div class="card h-100 shadow-sm rounded-lg card-custom">
-                    <div class="photo position-relative">
-                        <img src="@(string.IsNullOrEmpty(usuario.AvatarUrl) ? defaultImageUrl : usuario.AvatarUrl)"
-                             alt="@usuario.Nombre" class="card-img-top rounded-circle mx-auto d-block"
-                             onerror="this.src='@defaultImageUrl';" />
-                        <div class="photos position-absolute top-0 start-50 translate-middle">
-                            <i class="fas fa-camera-retro text-white"></i>
-                        </div>
-                    </div>
-                    <div class="card-body text-center">
-                        <h5 class="card-title txt4">@usuario.Nombre</h5>
-                        <p class="card-text txt5">@usuario.Nacionalidad</p>
-                        <p class="card-text txt2">Edad: @usuario.Edad</p>
-                    </div>
-                    <div class="card-footer text-center">
-                        <p>
-                            <a asp-controller="Usuarios" asp-action="PerfilUser" asp-route-idusuario="@usuario.IdUsuario" class="btn btn-outline-primary">Ver Perfil</a>
-
-                            <!-- Formulario para seguir al usuario -->
-                            <form method="post" action="/Usuarios/Seguir">
-                                <input type="hidden" name="idSeguido" value="@usuario.IdUsuario" />
-                                <button type="submit" class="follow-button ms-2 btn btn-outline-secondary">
-                                    <span class="like">
-                                        <i class="fab fa-gratipay heart-icon"></i> Seguir
-                                    </span>
-                                </button>
-                            </form>
-                        </p>
-                        <p class="txt3"><i class="far fa-calendar"></i> Fecha de registro: @usuario.FechaRegistro.ToString("dd/MM/yyyy")</p>
+<div class="container mt-5">
+    <!-- Header Section -->
+    <div class="header-section mb-5">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="fw-bold text-primary">Usuarios</h1>
+                <p class="text-muted">Descubre y conéctate con otros viajeros</p>
+            </div>
+            <div class="col-md-6">
+                <div class="search-container">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0 shadow-none"
+                               placeholder="Buscar usuarios..." id="searchInput">
                     </div>
                 </div>
             </div>
-        }
+        </div>
+    </div>
+
+    <!-- Usuarios Section -->
+    <div class="card border-0 shadow-sm mb-5">
+        <div class="card-body py-4">
+            <div class="row g-4" id="usersContainer">
+                @foreach (var usuario in Model)
+                {
+                    <div class="col-md-6 col-lg-4 col-xl-3 usuario-item">
+                        <div class="card h-100 border-0 shadow-sm hover-card">
+                            <div class="usuario-avatar-container">
+                                <div class="avatar-background"></div>
+                                <div class="avatar-wrapper">
+                                    <img src="@(string.IsNullOrEmpty(usuario.AvatarUrl) ? defaultImageUrl : usuario.AvatarUrl)"
+                                         alt="@usuario.Nombre" class="avatar-image"
+                                         onerror="this.src='@defaultImageUrl';" />
+                                </div>
+                            </div>
+                            <div class="card-body text-center pt-0">
+                                <h5 class="card-title mt-4 mb-1 fw-bold">@usuario.Nombre</h5>
+                                <p class="card-subtitle mb-2 text-muted">
+                                    <i class="fas fa-globe-americas me-1"></i>@usuario.Nacionalidad
+                                </p>
+                                <div class="user-info d-flex justify-content-center mt-3">
+                                    <div class="info-item me-3">
+                                        <div class="info-value fw-bold">@usuario.Edad</div>
+                                        <div class="info-label small text-muted">Edad</div>
+                                    </div>
+                                    <div class="info-item ms-3">
+                                        <div class="info-value fw-bold">
+                                            @usuario.FechaRegistro.ToString("yyyy")
+                                        </div>
+                                        <div class="info-label small text-muted">Registrado</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white border-0 text-center">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <a asp-controller="Usuarios" asp-action="PerfilUser"
+                                       asp-route-idusuario="@usuario.IdUsuario"
+                                       class="btn btn-outline-primary rounded-pill me-2">
+                                        <i class="fas fa-user me-1"></i>Ver Perfil
+                                    </a>
+
+                                    <form method="post" action="/Usuarios/Seguir" class="ms-2">
+                                        <input type="hidden" name="idSeguido" value="@usuario.IdUsuario" />
+                                        <button type="submit" class="btn btn-outline-primary rounded-pill follow-btn">
+                                            <i class="fas fa-user-plus"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div class="registro-fecha mt-3">
+                                    <small class="text-muted">
+                                        <i class="far fa-calendar-alt me-1"></i>Registrado el @usuario.FechaRegistro.ToString("dd/MM/yyyy")
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 </div>
 
+<style>
+    /* Estilos generales */
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .header-section {
+        position: relative;
+    }
+
+    .search-container {
+        max-width: 400px;
+        margin-left: auto;
+    }
+
+    /* Estilos para las tarjetas de usuarios */
+    .usuario-item {
+        transition: transform 0.3s ease;
+    }
+
+    .hover-card {
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+
+    .usuario-avatar-container {
+        position: relative;
+        height: 120px;
+        overflow: hidden;
+    }
+
+    .avatar-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    }
+
+    .avatar-wrapper {
+        position: absolute;
+        bottom: 0px; /* Baja más la imagen para que se vea más grande */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px; /* Hacemos la imagen un poco más grande */
+        height: 120px; /* Hacemos la imagen cuadrada */
+        border-radius: 10%; /* Bordes redondeados */
+        background-color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .avatar-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 20%;
+    }
+
+    .user-info {
+        padding: 10px 0;
+        border-top: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .info-item {
+        padding: 0 10px;
+    }
+
+    .info-value {
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    .follow-btn {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+
+    .registro-fecha {
+        color: #999;
+        font-size: 0.85rem;
+    }
+</style>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // Obtener el contenedor de usuarios y el campo de búsqueda
-    const searchInput = document.getElementById("searchInput");
-    const usersContainer = document.getElementById("usersContainer");
-
-    // Evento para filtrar los usuarios por nombre
-    searchInput.addEventListener("input", function() {
-        const searchTerm = searchInput.value.toLowerCase();
-
-        // Obtener todos los elementos de usuario dentro del contenedor
-        const usuarios = usersContainer.getElementsByClassName("col");
-        Array.from(usuarios).forEach(usuario => {
-            const usuarioNombre = usuario.querySelector(".txt4").textContent.toLowerCase();
-
-            // Mostrar u ocultar los usuarios según el término de búsqueda
-            if (usuarioNombre.includes(searchTerm)) {
-                usuario.style.display = "block";
-            } else {
-                usuario.style.display = "none";
-            }
+    $(document).ready(function() {
+        // Búsqueda
+        $("#searchInput").on("input", function() {
+            const searchTerm = $(this).val().toLowerCase();
+            filterUsers(searchTerm);
         });
-    });
 
+        function filterUsers(searchTerm) {
+            $(".usuario-item").each(function() {
+                const usuarioNombre = $(this).find(".card-title").text().toLowerCase();
+                const usuarioNacionalidad = $(this).find(".card-subtitle").text().toLowerCase();
+                const matchesSearch = usuarioNombre.includes(searchTerm) || usuarioNacionalidad.includes(searchTerm);
+                $(this).toggle(matchesSearch);
+            });
+        }
+
+        // Animación para botón de seguir
+        $(".follow-btn").click(function() {
+            const button = $(this);
+
+            // Cambiar visualmente el botón después de hacer clic
+            button.html('<i class="fas fa-check"></i>');
+            button.removeClass('btn-outline-primary').addClass('btn-success');
+
+            // Este evento será manejado por el servidor, pero agregamos una animación visual
+            // inmediata para mejor experiencia de usuario
+
+            // Nota: Esto es solo visual, la lógica real de seguir al usuario la maneja tu
+            // controlador al enviar el formulario
+        });
+
+        // Mensaje de notificación para cuando se sigue a un usuario
+        // (Esta parte sería ideal integrarla con mensajes TempData desde el controlador)
+        function showFollowNotification(message, userName) {
+            // Crear y mostrar notificación
+            const notification = $(`
+                <div class="toast-notification bg-success text-white px-4 py-3 rounded-3 shadow-lg">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <div>${message} <strong>${userName}</strong></div>
+                    </div>
+                </div>
+            `);
+
+            // Añadir al DOM
+            $('body').append(notification);
+
+            // Posicionar
+            notification.css({
+                position: 'fixed',
+                bottom: '20px',
+                right: '20px',
+                zIndex: 9999,
+                opacity: 0,
+                transform: 'translateY(20px)'
+            });
+
+            // Animar entrada
+            setTimeout(function() {
+                notification.css({
+                    transition: 'all 0.3s ease',
+                    opacity: 1,
+                    transform: 'translateY(0)'
+                });
+            }, 10);
+
+            // Desaparecer después de 3 segundos
+            setTimeout(function() {
+                notification.css({
+                    opacity: 0,
+                    transform: 'translateY(20px)'
+                });
+                setTimeout(function() {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+    });
 </script>

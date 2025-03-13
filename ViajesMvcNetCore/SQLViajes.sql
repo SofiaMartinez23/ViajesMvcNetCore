@@ -54,12 +54,12 @@ CREATE TABLE LUGARES (
     CONSTRAINT FK_LUGARES_USUARIOS FOREIGN KEY (ID_USUARIO) REFERENCES USUARIOS(ID_USUARIO) -- Definimos la clave foránea
 );
 -- Crear tabla SEGUIDORES
+
 CREATE TABLE SEGUIDORES (
     ID_SEGUIDOR INT PRIMARY KEY,
     ID_USUARIO_SEGUIDOR INT NOT NULL, -- El usuario que sigue
     ID_USUARIO_SEGUIDO INT NOT NULL, -- El usuario que es seguido
     FECHA_SEGUIMIENTO DATETIME NOT NULL,
-    CONSTRAINT FK_SEGUIDORES_SEGUIDOR FOREIGN KEY (ID_USUARIO_SEGUIDOR) REFERENCES USUARIOS(ID_USUARIO),
     CONSTRAINT FK_SEGUIDORES_SEGUIDO FOREIGN KEY (ID_USUARIO_SEGUIDO) REFERENCES USUARIOS(ID_USUARIO)
 );
 
@@ -92,7 +92,6 @@ CREATE TABLE COMENTARIOS (
 -- Crear tabla CHAT
 CREATE TABLE CHAT (
     ID_MENSAJE INT PRIMARY KEY,
-
     ID_USUARIO_REMITENTE INT NOT NULL,
     ID_USUARIO_DESTINATARIO INT NOT NULL,
     MENSAJE NVARCHAR(MAX) NOT NULL,
@@ -104,29 +103,29 @@ CREATE TABLE CHAT (
 -- Insertar datos de ejemplo en USUARIOS
 INSERT INTO USUARIOS (ID_USUARIO, NOMBRE, EMAIL, EDAD, NACIONALIDAD, PREFERENCIASDEVIAJE, IMAGEN, FECHADEREGISTRO)
 VALUES
-(1, N'Juan Pérez', N'juan.perez@email.com', 28, N'México', N'Aventura, Historia', N'https://ejemplo.com/juan.jpg', '2024-11-23'),
-(2, N'María García', N'maria.garcia@email.com', 35, N'España', N'Cultura, Relax', N'https://ejemplo.com/maria.jpg', '2024-11-23'),
-(3, N'Pedro Sánchez', N'pedro.sanchez@email.com', 22, N'Argentina', N'Playa, Relax', N'https://ejemplo.com/pedro.jpg', '2025-02-06'),
-(4, N'Luisa Fernández', N'luisa.fernandez@email.com', 40, N'Colombia', N'Naturaleza, Gastronomía', N'https://ejemplo.com/luisa.jpg', '2025-01-15'),
-(5, N'Carlos Rodríguez', N'carlos.rodriguez@email.com', 31, N'Chile', N'Montaña, Aventura', N'https://ejemplo.com/carlos.jpg', '2024-12-20');
+(1, N'Juan Pérez', N'juan.perez@email.com', 28, N'México', N'Aventura, Historia', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg', '2024-11-23'),
+(2, N'María García', N'maria.garcia@email.com', 35, N'España', N'Cultura, Relax', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg', '2024-11-23'),
+(3, N'Pedro Sánchez', N'pedro.sanchez@email.com', 22, N'Argentina', N'Playa, Relax', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg', '2025-02-06'),
+(4, N'Luisa Fernández', N'luisa.fernandez@email.com', 40, N'Colombia', N'Naturaleza, Gastronomía', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg', '2025-01-15'),
+(5, N'Carlos Rodríguez', N'carlos.rodriguez@email.com', 31, N'Chile', N'Montaña, Aventura', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg', '2024-12-20');
 
 -- Insertar datos de ejemplo en LOG_IN, asegurando que ID_USUARIO coincida
 INSERT INTO LOG_IN (ID_USUARIO, CORREO, CLAVE)
 VALUES
-(1, 'juan.perez@email.com', 'contrasena1'),
-(2, 'maria.garcia@email.com', 'contrasena2'),
-(3, 'pedro.sanchez@email.com', 'contrasena3'),
-(4, 'luisa.fernandez@email.com', 'contrasena4'),
-(5, 'carlos.rodriguez@email.com', 'contrasena5');
+(1, 'juan.perez@email.com', 'a'),
+(2, 'maria.garcia@email.com', 'a1'),
+(3, 'pedro.sanchez@email.com', 'a2'),
+(4, 'luisa.fernandez@email.com', 'a3'),
+(5, 'carlos.rodriguez@email.com', 'a4');
 
 -- Insertar datos de ejemplo en USUARIOLOGIN, asegurando que ID_USUARIO y CORREO coincidan
 INSERT INTO USUARIOLOGIN (ID_USUARIO, CORREO, NOMBRE, CLAVE, CONFIRMARCLAVE, PREFERENCIASDEVIAJE, ColorAvatar, AvatarUrl)
 VALUES
-(1, N'juan.perez@email.com', N'Juan Pérez', N'contrasena1', N'contrasena1', N'Aventura, Historia', N'#FF0000', N'https://ejemplo.com/avatar/juan.jpg'),
-(2, N'maria.garcia@email.com', N'María García', N'contrasena2', N'contrasena2', N'Cultura, Relax', N'#00FF00', N'https://ejemplo.com/avatar/maria.jpg'),
-(3, N'pedro.sanchez@email.com', N'Pedro Sánchez', N'contrasena3', N'contrasena3', N'Playa, Relax', N'#0000FF', N'https://ejemplo.com/avatar/pedro.jpg'),
-(4, N'luisa.fernandez@email.com', N'Luisa Fernández', N'contrasena4', N'contrasena4', N'Naturaleza, Gastronomía', N'#FFFF00', N'https://ejemplo.com/avatar/luisa.jpg'),
-(5, N'carlos.rodriguez@email.com', N'Carlos Rodríguez', N'contrasena5', N'contrasena5', N'Montaña, Aventura', N'#00FFFF', N'https://ejemplo.com/avatar/carlos.jpg');
+(1, N'juan.perez@email.com', N'Juan Pérez', N'contrasena1', N'contrasena1', N'Aventura, Historia', N'#FF0000', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg'),
+(2, N'maria.garcia@email.com', N'María García', N'contrasena2', N'contrasena2', N'Cultura, Relax', N'#00FF00', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg'),
+(3, N'pedro.sanchez@email.com', N'Pedro Sánchez', N'contrasena3', N'contrasena3', N'Playa, Relax', N'#0000FF', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg'),
+(4, N'luisa.fernandez@email.com', N'Luisa Fernández', N'contrasena4', N'contrasena4', N'Naturaleza, Gastronomía', N'#FFFF00', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg'),
+(5, N'carlos.rodriguez@email.com', N'Carlos Rodríguez', N'contrasena5', N'contrasena5', N'Montaña, Aventura', N'#00FFFF', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg');
 
 -- Insertar datos de ejemplo en LUGARES
 INSERT INTO LUGARES (ID_LUGAR, NOMBRE, DESCRIPCION, UBICACION, CATEGORIA, HORARIO, IMAGEN, TIPO, ID_USUARIO)
@@ -139,7 +138,7 @@ VALUES
 -- Ejemplo 1: Un parque famoso
 
 -- Insertar datos de ejemplo en LUGARESFAVORITOS
-INSERT INTO LUGARESFAVORITOS (ID_USUARIO, ID_LUGAR, FECHADEVISITA_LUGAR, IMAGEN_LUGAR, NOMBRE_LUGAR, DESCRIPCION_LUGAR, UBICACION_LUGAR, TIPO_LUGAR)
+INSERT INTO LUGARESFAVORITOS (ID_FAVORITO,ID_USUARIO, ID_LUGAR, FECHADEVISITA_LUGAR, IMAGEN_LUGAR, NOMBRE_LUGAR, DESCRIPCION_LUGAR, UBICACION_LUGAR, TIPO_LUGAR)
 VALUES 
 (1, 1, 1, '2025-03-10', N'https://ejemplo.com/paris.jpg', N'París', N'Capital de Francia, famosa por su cultura.', N'Francia', N'Ciudad'),
 (2, 1, 3, '2025-04-15', N'https://ejemplo.com/beijing.jpg', N'Beijing', N'Capital de China, famosa por su historia antigua.', N'China', N'Ciudad'),
@@ -210,7 +209,7 @@ CREATE OR ALTER PROCEDURE SP_GET_USUARIO_BY_EMAIL
     (@email NVARCHAR(255))
 AS
 BEGIN
-    SELECT U.*, UL.CLAVE, UL.IMAGEN AS IMAGEN_LOGIN, UL.PREFERENCIASDEVIAJE AS PREFERENCIASDEVIAJE_LOGIN, UL.CORREO
+    SELECT U.*, UL.CLAVE, UL.PREFERENCIASDEVIAJE AS PREFERENCIASDEVIAJE_LOGIN, UL.CORREO
     FROM USUARIOS U
     INNER JOIN USUARIOLOGIN UL ON U.ID_USUARIO = UL.ID_USUARIO
     WHERE U.EMAIL = @email;
@@ -247,7 +246,7 @@ CREATE OR ALTER PROCEDURE SP_GET_USUARIO_BY_ID
     (@id_usuario INT)
 AS
 BEGIN
-    SELECT U.*, UL.CLAVE, UL.IMAGEN AS IMAGEN_LOGIN, UL.PREFERENCIASDEVIAJE AS PREFERENCIASDEVIAJE_LOGIN, UL.CORREO
+    SELECT U.*, UL.CLAVE, UL.PREFERENCIASDEVIAJE AS PREFERENCIASDEVIAJE_LOGIN, UL.CORREO
     FROM USUARIOS U
     INNER JOIN USUARIOLOGIN UL ON U.ID_USUARIO = UL.ID_USUARIO
     WHERE U.ID_USUARIO = @id_usuario;
@@ -670,9 +669,9 @@ WHERE
 
 
 
-
 CREATE OR ALTER VIEW VISTA_USUARIOS_SEGUIDOS_PERFIL AS
-SELECT
+SELECT DISTINCT
+    S.ID_SEGUIDOR,
     S.ID_USUARIO_SEGUIDOR,
     S.ID_USUARIO_SEGUIDO,
     U.NOMBRE AS NOMBRE_SEGUIDO,
@@ -684,9 +683,8 @@ JOIN
     USUARIOS U ON S.ID_USUARIO_SEGUIDO = U.ID_USUARIO;
 GO
 
+
 select * from VISTA_USUARIOS_SEGUIDOS_PERFIL 
-
-
 
 CREATE OR ALTER PROCEDURE SP_SEGUIDORES_BY_USUARIO
     @idusuario INT
@@ -694,6 +692,7 @@ AS
 BEGIN
     -- Seleccionar los usuarios seguidos desde la vista, filtrando por ID_USUARIO_SEGUIDOR
     SELECT
+        ID_SEGUIDOR,
         ID_USUARIO_SEGUIDOR,
         ID_USUARIO_SEGUIDO,
         NOMBRE_SEGUIDO,
@@ -706,7 +705,8 @@ BEGIN
 END
 GO
 
-EXEC SP_SEGUIDORES_BY_USUARIO 1
+
+EXEC SP_SEGUIDORES_BY_USUARIO 6
 
 select * from LUGARESFAVORITOS where ID_USUARIO=1
 select * from COMENTARIOS
@@ -741,5 +741,5 @@ END;
 EXEC SP_DELETE_SEGUIDOR @idusuarioseguidor = 1, @idusuarioseguido = 3;
 
 
-select * from VISTA_USUARIOS_SEGUIDOS_PERFIL where ID_USUARIO_SEGUIDOR = 5
+select * from VISTA_USUARIOS_SEGUIDOS_PERFIL where ID_USUARIO_SEGUIDOR = 6
 select * from LUGARESFAVORITOS where ID_USUARIO = 1
