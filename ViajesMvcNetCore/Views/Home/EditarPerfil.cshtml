@@ -42,12 +42,12 @@
         text-align: center;
     }
 
-        .profile-header h1 {
-            margin: 0;
-            font-weight: 700;
-            font-size: 2.2rem;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-        }
+    .profile-header h1 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 2.2rem;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
 
     .profile-content {
         padding: 25px;
@@ -71,11 +71,11 @@
         text-decoration: none;
     }
 
-        .btn-back:hover {
-            background-color: white;
-            color: var(--primary-color);
-            transform: scale(1.1);
-        }
+    .btn-back:hover {
+        background-color: white;
+        color: var(--primary-color);
+        transform: scale(1.1);
+    }
 
     .form-label {
         color: var(--primary-color);
@@ -92,10 +92,10 @@
         font-size: 0.95rem;
     }
 
-        .form-control:focus, .form-select:focus {
-            box-shadow: 0 0 0 0.2rem rgba(44, 110, 73, 0.25);
-            border-color: var(--primary-color);
-        }
+    .form-control:focus, .form-select:focus {
+        box-shadow: 0 0 0 0.2rem rgba(44, 110, 73, 0.25);
+        border-color: var(--primary-color);
+    }
 
     .btn-submit {
         background-color: var(--primary-color);
@@ -112,11 +112,11 @@
         width: 100%;
     }
 
-        .btn-submit:hover {
-            background-color: #245a3c;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
+    .btn-submit:hover {
+        background-color: #245a3c;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
 
     .avatar-preview-container {
         display: flex;
@@ -136,9 +136,9 @@
         transition: all 0.3s;
     }
 
-        .avatar-preview:hover {
-            transform: scale(1.05);
-        }
+    .avatar-preview:hover {
+        transform: scale(1.05);
+    }
 
     .avatar-color-preview {
         width: 40px;
@@ -170,11 +170,22 @@
         margin-bottom: 20px;
     }
 
-    .text-danger {
+    /* Ocultar los mensajes de error personalizados */
+    .text-danger, .invalid-feedback, .field-validation-error {
+        display: none !important;
+    }
+
+    /* Estilo para indicar campo requerido con asterisco */
+    .required-field::after {
+        content: " *";
         color: #dc3545;
-        font-size: 0.85rem;
-        margin-top: 5px;
-        display: block;
+        font-weight: bold;
+    }
+
+    /* Estilo para campos inválidos */
+    .is-invalid {
+        border-color: #dc3545;
+        background-color: #f8d7da;
     }
 </style>
 
@@ -196,7 +207,7 @@
                 </div>
             }
 
-            <form method="post" asp-action="EditarPerfil" class="needs-validation" novalidate>
+            <form method="post" asp-action="EditarPerfil" id="editProfileForm">
                 <input type="hidden" asp-for="IdUsuario" />
                 <input type="hidden" id="HiddenColorAvatar" name="ColorAvatar" value="@Model.ColorAvatar" />
 
@@ -215,37 +226,34 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label asp-for="Nombre" class="form-label">Nombre</label>
-                                    <input asp-for="Nombre" class="form-control" placeholder="Tu nombre" />
-                                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                                    <label asp-for="Nombre" class="form-label required-field">Nombre</label>
+                                    <input asp-for="Nombre" class="form-control" placeholder="Tu nombre" required />
                                 </div>
 
                                 <div class="form-group">
-                                    <label asp-for="CorreoLogin" class="form-label">Correo electrónico</label>
-                                    <input asp-for="CorreoLogin" class="form-control" type="email" placeholder="ejemplo@correo.com" />
-                                    <span asp-validation-for="CorreoLogin" class="text-danger"></span>
+                                    <label asp-for="CorreoLogin" class="form-label required-field">Correo electrónico</label>
+                                    <input asp-for="CorreoLogin" class="form-control" type="email" placeholder="ejemplo@correo.com" required />
                                 </div>
 
                                 <div class="form-group">
-                                    <label asp-for="Clave" class="form-label">Contraseña</label>
-                                    <input asp-for="Clave" class="form-control" type="password" placeholder="Contraseña" />
-                                    <span asp-validation-for="Clave" class="text-danger"></span>
+                                    <label asp-for="Clave" class="form-label required-field">Contraseña</label>
+                                    <input asp-for="Clave" class="form-control" type="password" placeholder="Contraseña" required />
                                 </div>
 
                                 <div class="form-group">
-                                    <label asp-for="ConfirmarClave" class="form-label">Confirmar Contraseña</label>
-                                    <input asp-for="ConfirmarClave" class="form-control" type="password" placeholder="Confirma tu contraseña" />
-                                    <span asp-validation-for="ConfirmarClave" class="text-danger"></span>
+                                    <label asp-for="ConfirmarClave" class="form-label required-field">Confirmar Contraseña</label>
+                                    <input asp-for="ConfirmarClave" class="form-control" type="password" placeholder="Confirma tu contraseña" required />
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label asp-for="PreferenciaViaje" class="form-label">Preferencia de Viaje</label>
-                                    <select asp-for="PreferenciaViaje" class="form-select">
+                                    <label asp-for="PreferenciaViaje" class="form-label required-field">Preferencia de Viaje</label>
+                                    <select asp-for="PreferenciaViaje" class="form-select" required>
                                         <option value="">Selecciona tu preferencia...</option>
                                         <option value="Turístico">Turístico</option>
                                         <option value="Restaurante">Restaurante</option>
+                                        <option value="Deporte">Deporte</option>
                                         <option value="Deporte">Deporte</option>
                                         <option value="Cultura">Cultura</option>
                                         <option value="Naturaleza">Naturaleza</option>
@@ -260,25 +268,21 @@
                                         <option value="Residencial">Residencial</option>
                                         <option value="Cívico">Cívico</option>
                                     </select>
-                                    <span asp-validation-for="PreferenciaViaje" class="text-danger"></span>
                                 </div>
 
                                 <div class="form-group">
-                                    <label asp-for="AvatarUrl" class="form-label">URL de Avatar</label>
-                                    <input asp-for="AvatarUrl" class="form-control" placeholder="URL de imagen para avatar" />
-                                    <span asp-validation-for="AvatarUrl" class="text-danger"></span>
+                                    <label asp-for="AvatarUrl" class="form-label required-field">URL de Avatar</label>
+                                    <input asp-for="AvatarUrl" class="form-control" placeholder="URL de imagen para avatar" required />
                                 </div>
 
                                 <div class="form-group">
-                                    <label asp-for="Edad" class="form-label">Edad</label>
-                                    <input asp-for="Edad" class="form-control" type="number" placeholder="Tu edad" />
-                                    <span asp-validation-for="Edad" class="text-danger"></span>
+                                    <label asp-for="Edad" class="form-label required-field">Edad</label>
+                                    <input asp-for="Edad" class="form-control" type="number" placeholder="Tu edad" required />
                                 </div>
 
                                 <div class="form-group">
-                                    <label asp-for="Nacionalidad" class="form-label">Nacionalidad</label>
-                                    <input asp-for="Nacionalidad" class="form-control" placeholder="Tu nacionalidad" />
-                                    <span asp-validation-for="Nacionalidad" class="text-danger"></span>
+                                    <label asp-for="Nacionalidad" class="form-label required-field">Nacionalidad</label>
+                                    <input asp-for="Nacionalidad" class="form-control" placeholder="Tu nacionalidad" required />
                                 </div>
                             </div>
                         </div>
@@ -321,6 +325,28 @@
                 $(".avatar-preview").css("background-color", $("#ColorAvatar").val());
                 $("#preview-avatar").attr("src", "/images/default-avatar.png");
             }
+
+            // Validar campos obligatorios antes de enviar el formulario
+            $("#editProfileForm").submit(function(event) {
+                var isValid = true;
+
+                // Comprobamos cada campo requerido
+                $(this).find("input[required], select[required]").each(function() {
+                    if ($(this).val().trim() === "") {
+                        isValid = false;
+                        $(this).addClass("is-invalid"); // Agregar clase de error
+                        $(this).next(".invalid-feedback").remove(); // Eliminar feedback antiguo
+                        $(this).after('<div class="invalid-feedback">Este campo es obligatorio</div>'); // Mostrar mensaje de error
+                    } else {
+                        $(this).removeClass("is-invalid"); // Eliminar clase de error si no está vacío
+                        $(this).next(".invalid-feedback").remove(); // Eliminar mensaje de error
+                    }
+                });
+
+                if (!isValid) {
+                    event.preventDefault(); // Si hay un campo vacío, no enviamos el formulario
+                }
+            });
         });
     </script>
 

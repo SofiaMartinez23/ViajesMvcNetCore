@@ -1,77 +1,220 @@
 ﻿@model List<UsuarioSeguidoPerfil>
 
-    <h2>Seguidos</h2>
-@if (Model != null && Model.Any())
-{
-    @foreach (var seguido in Model)
+<div class="seguidos-container">
+    <h5 class="seguidos-title">Seguidos</h5>
+
+    @if (Model != null && Model.Any())
     {
-        <div class="seguidor-item" data-id-seguido="@seguido.IdUsuarioSeguido" data-id-seguidor="@seguido.IdUsuarioSeguidor">
-            <img src="@seguido.ImagenSeguido" alt="@seguido.NombreSeguido" class="seguidor-avatar" />
-                    <p>@seguido.NombreSeguido</p>
+        <div class="seguidos-list">
+            @foreach (var seguido in Model)
+            {
+                <div class="seguidos-item" data-id-seguido="@seguido.IdUsuarioSeguido" data-id-seguidor="@seguido.IdUsuarioSeguidor">
+                    <div class="seguidos-avatar">
+                        <img src="@seguido.ImagenSeguido" alt="@seguido.NombreSeguido" />
+                    </div>
+                    <div class="seguidos-info">
+                        <span class="seguidos-name">@seguido.NombreSeguido</span>
+                    </div>
+                    <div class="seguidos-actions">
 
-
-                <!-- Enlace al perfil del usuario seguido -->
-                <a asp-controller="Usuarios" asp-action="PerfilUser" asp-route-idusuario="@seguido.IdUsuarioSeguido">
-                    <img src="https://e7.pngegg.com/pngimages/649/536/png-clipart-crop-supply-computer-icons-blog-info-infographic-text.png" style="height:23px; width:23px" />
-                </a>
-
-                <!-- Botón para dejar de seguir -->
-                @if (seguido.IdUsuarioSeguidor == Context.Session.GetInt32("IdUsuario"))
-                {
-                    <button class="btn btn-danger btn-sm dejar-de-seguir" style="background: none; border: none; padding: 0;">
-                        <img src="https://w7.pngwing.com/pngs/36/901/png-transparent-cancel-disconnect-unfollow-user-block-unroll-unsubscribe-pinpoint-interface-i-icon-thumbnail.png" style="height:26px; width:26px" />
-                    </button>
-                }
+                        <a asp-controller="Usuarios" asp-action="PerfilUser" asp-route-idusuario="@seguido.IdUsuarioSeguido">
+                            <img src="https://e7.pngegg.com/pngimages/649/536/png-clipart-crop-supply-computer-icons-blog-info-infographic-text.png" style="height:23px; width:23px" />
+                        </a>
+                        @if (seguido.IdUsuarioSeguidor == Context.Session.GetInt32("IdUsuario"))
+                        {
+                            <button class="unfollow-btn dejar-de-seguir">
+                                <i class="fas fa-user-times"></i>
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
         </div>
     }
-}
-else
-{
-    <p>No has seguido a ningún usuario aún.</p>
-}
+    else
+    {
+        <div class="empty-state">
+            <i class="fas fa-user-plus"></i>
+            <p>No sigues a nadie todavía</p>
+        </div>
+    }
+</div>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    .seguidos-container {
+        max-width: 400px;
+        border-radius: 12px;
+        background-color: white;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        overflow: hidden;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .seguidos-title {
+        padding: 12px 16px;
+        border-bottom: 1px solid #efefef;
+        font-weight: 600;
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .seguidos-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .seguidos-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        transition: background-color 0.2s;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+        .seguidos-item:hover {
+            background-color: #fafafa;
+        }
+
+    .seguidos-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-right: 12px;
+    }
+
+        .seguidos-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .seguidos-info {
+        flex: 1;
+    }
+
+    .seguidos-name {
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .seguidos-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .profile-link, .unfollow-btn {
+        background: none;
+        border: none;
+        color: #8e8e8e;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 4px;
+        transition: color 0.2s;
+    }
+
+        .profile-link:hover {
+            color: #1da1f2;
+        }
+
+        .unfollow-btn:hover {
+            color: #ed4956;
+        }
+
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 16px;
+        color: #8e8e8e;
+        text-align: center;
+    }
+
+        .empty-state i {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 14px;
+        }
+</style>
 
 <script>
     $(document).ready(function() {
         // Manejar el clic del botón "Dejar de seguir"
         $(document).on('click', '.dejar-de-seguir', function(e) {
             e.preventDefault();
-            var seguidorItem = $(this).closest('.seguidor-item');
+            var seguidorItem = $(this).closest('.seguidos-item');
             var idSeguido = seguidorItem.data('id-seguido');
 
-            // Mostrar SweetAlert de confirmación
             Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡No podrás volver a seguir a este usuario a menos que lo hagas manualmente!",
-                icon: 'warning',
+                title: '¿Dejar de seguir?',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, dejar de seguir',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true
+                confirmButtonText: 'Sí',
+                cancelButtonText: 'No',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                showCloseButton: true,
+                backdrop: true,
+                customClass: {
+                    popup: 'swal-small'
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Hacer la petición POST para dejar de seguir
                     $.post('/Home/DejarDeSeguir', { idSeguido: idSeguido }, function() {
-                        // Eliminar el usuario de la vista inmediatamente
-                        seguidorItem.remove();
+                        seguidorItem.slideUp(200, function() {
+                            $(this).remove();
 
-                        // Mostrar SweetAlert de éxito
-                        Swal.fire(
-                            'Eliminado',
-                            'Has dejado de seguir a este usuario.',
-                            'success'
-                        );
+                            if ($('.seguidos-item').length === 0) {
+                                $('.seguidos-list').replaceWith(`
+                                    <div class="empty-state">
+                                        <i class="fas fa-user-plus"></i>
+                                        <p>No sigues a nadie todavía</p>
+                                    </div>
+                                `);
+                            }
+                        });
+
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'bottom-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Has dejado de seguir'
+                        });
                     }).fail(function() {
-                        // Mostrar SweetAlert de error
-                        Swal.fire(
-                            'Error',
-                            'Hubo un error al dejar de seguir al usuario.',
-                            'error'
-                        );
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'No se pudo completar la acción',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                     });
                 }
             });
         });
     });
 </script>
+
+<style>
+    .swal-small {
+        width: 300px !important;
+        font-size: 14px !important;
+    }
+
+    .swal2-popup {
+        border-radius: 12px !important;
+    }
+</style>

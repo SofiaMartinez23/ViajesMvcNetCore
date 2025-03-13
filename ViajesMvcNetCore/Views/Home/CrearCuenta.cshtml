@@ -5,43 +5,49 @@
         <div class="row">
             <div class="col-sm-6 text-black">
 
+                <!-- Logo igual al de Login -->
                 <div class="px-5 ms-xl-4">
-                    <i class="fas fa-crow fa-2x me-3 pt-5 mt-xl-4" style="color: #709085;"></i>
-                    <span class="h1 fw-bold mb-0">Logo</span>
+                    <img src="~/images/EntdGehLogo.jpg" alt="Logo EntdGeh" style="width: 180px; height: 180px;">
                 </div>
 
-                <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
+                <div class="d-flex align-items-center h-custom-2 px-5 mt-2 pt-3">
                     <form method="post" style="width: 23rem;">
                         <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Registro</h3>
 
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                         <div class="form-floating mb-4">
-                            <input asp-for="Nombre" class="form-control form-control-lg"  />
+                            <input asp-for="Nombre" class="form-control form-control-lg" required />
                             <label asp-for="Nombre"></label>
                             <span asp-validation-for="Nombre" class="text-danger"></span>
                         </div>
 
                         <div class="form-floating mb-4">
-                            <input asp-for="Correo" class="form-control form-control-lg"  />
+                            <input asp-for="Correo" class="form-control form-control-lg" required />
                             <label asp-for="Correo"></label>
                             <span asp-validation-for="Correo" class="text-danger"></span>
                         </div>
 
-                        <div class="form-floating mb-4">
-                            <input asp-for="Clave" type="password" class="form-control form-control-lg" />
+                        <div class="form-floating mb-4 password-container">
+                            <input asp-for="Clave" type="password" class="form-control form-control-lg" id="claveField" required />
                             <label asp-for="Clave"></label>
+                            <span class="password-toggle" onclick="togglePassword('claveField', 'toggleIconClave')">
+                                <i class="bi bi-eye-slash" id="toggleIconClave"></i>
+                            </span>
                             <span asp-validation-for="Clave" class="text-danger"></span>
                         </div>
 
-                        <div class="form-floating mb-4">
-                            <input asp-for="ConfirmarClave" type="password" class="form-control form-control-lg"  />
+                        <div class="form-floating mb-4 password-container">
+                            <input asp-for="ConfirmarClave" type="password" class="form-control form-control-lg" id="confirmarClaveField" required />
                             <label asp-for="ConfirmarClave"></label>
+                            <span class="password-toggle" onclick="togglePassword('confirmarClaveField', 'toggleIconConfirmarClave')">
+                                <i class="bi bi-eye-slash" id="toggleIconConfirmarClave"></i>
+                            </span>
                             <span asp-validation-for="ConfirmarClave" class="text-danger"></span>
                         </div>
 
                         <div class="form-floating mb-4">
-                            <select asp-for="PreferenciaViaje" class="form-select form-select-lg" aria-label="Preferencias de Viaje">
+                            <select asp-for="PreferenciaViaje" class="form-select form-select-lg" aria-label="Preferencias de Viaje" required>
                                 <option value="" selected></option>
                                 <option value="Turístico">Turístico</option>
                                 <option value="Restaurante">Restaurante</option>
@@ -65,7 +71,7 @@
 
                         <div class="mb-4">
                             <label asp-for="ColorAvatar" class="form-label">Color del Avatar</label>
-                            <input asp-for="ColorAvatar" type="color" class="form-control form-control-lg" />
+                            <input asp-for="ColorAvatar" type="color" class="form-control form-control-lg" required />
                             <span asp-validation-for="ColorAvatar" class="text-danger"></span>
                         </div>
 
@@ -119,6 +125,42 @@
         display: block;
     }
 
- 
+    /* Estilos para el toggle de contraseña */
+    .password-container {
+        position: relative;
+    }
 
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        z-index: 10;
+        color: #6c757d;
+    }
+
+        .password-toggle:hover {
+            color: #212529;
+        }
 </style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+<script>
+    // Función para mostrar/ocultar la contraseña
+    function togglePassword(fieldId, iconId) {
+        const passwordField = document.getElementById(fieldId);
+        const toggleIcon = document.getElementById(iconId);
+
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleIcon.classList.remove('bi-eye-slash');
+            toggleIcon.classList.add('bi-eye');
+        } else {
+            passwordField.type = 'password';
+            toggleIcon.classList.remove('bi-eye');
+            toggleIcon.classList.add('bi-eye-slash');
+        }
+    }
+</script>

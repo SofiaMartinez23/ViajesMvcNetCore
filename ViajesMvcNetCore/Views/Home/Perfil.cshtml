@@ -214,14 +214,12 @@
     }
 </style>
 
-
 @section Scripts {
     <script>
         $(document).ready(function() {
             var idUsuario = "@Model.IdUsuario";
             var request = "/Home/_Lugares?idUsuario=" + idUsuario;
             var request2 = "/Home/_Seguidos?idusuario=" + idUsuario;
-
 
             $("#containerlugares").load(request);
             $("#containerseguidores").load(request2);
@@ -237,8 +235,6 @@
                 request = "/Home/_Favoritos?idUsuario=" + idUsuario;
                 $("#containerlugares").load(request);
             });
-
-            
         });
     </script>
 }

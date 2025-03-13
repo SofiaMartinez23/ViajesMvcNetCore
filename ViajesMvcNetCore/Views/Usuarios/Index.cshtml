@@ -75,7 +75,7 @@
 
                                     <form method="post" action="/Usuarios/Seguir" class="ms-2">
                                         <input type="hidden" name="idSeguido" value="@usuario.IdUsuario" />
-                                        <button type="submit" class="btn btn-outline-primary rounded-pill follow-btn" data-id="@usuario.IdUsuario">
+                                        <button type="submit" class="btn btn-outline-primary rounded-pill follow-btn" data-id="@usuario.IdUsuario" data-name="@usuario.Nombre">
                                             <i class="fas fa-user-plus"></i>
                                         </button>
                                     </form>
@@ -199,83 +199,27 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        // Búsqueda
-        $("#searchInput").on("input", function() {
-            const searchTerm = $(this).val().toLowerCase();
-            filterUsers(searchTerm);
-        });
-
-        function filterUsers(searchTerm) {
-            $(".usuario-item").each(function() {
-                const usuarioNombre = $(this).find(".card-title").text().toLowerCase();
-                const usuarioNacionalidad = $(this).find(".card-subtitle").text().toLowerCase();
-                const matchesSearch = usuarioNombre.includes(searchTerm) || usuarioNacionalidad.includes(searchTerm);
-                $(this).toggle(matchesSearch);
-            });
-        }
-
-        // Confirmación SweetAlert para seguir o dejar de seguir
+        // Confirmación para seguir a un usuario
         $(".follow-btn").click(function(e) {
             e.preventDefault();
             const button = $(this);
             const userId = button.data("id");
-            let followedUsers = JSON.parse(localStorage.getItem("followedUsers")) || [];
+            const userName = button.data("name");
 
-            // Si el usuario ya está seguido
-            if (followedUsers.includes(userId)) {
-                // Confirmación para dejar de seguir
-                Swal.fire({
-                    title: '¿Quieres dejar de seguir a este usuario?',
-                    text: "¡Ya no verás sus actualizaciones!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí, dejar de seguir',
-                    cancelButtonText: 'No, cancelar',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Eliminar el usuario de los seguidos
-                        followedUsers = followedUsers.filter(id => id !== userId);
-                        localStorage.setItem("followedUsers", JSON.stringify(followedUsers));
-
-                        // Cambiar el icono visualmente a "Seguir"
-                        button.html('<i class="fas fa-user-plus"></i>');
-                        button.removeClass('btn-success').addClass('btn-outline-primary');
-                    }
-                });
-            } else {
-                // Confirmación para seguir
-                Swal.fire({
-                    title: '¿Quieres seguir a este usuario?',
-                    text: "¡Estás a punto de seguir a este usuario!",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí, seguir',
-                    cancelButtonText: 'No, cancelar',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Añadir el usuario a la lista de seguidos
-                        followedUsers.push(userId);
-                        localStorage.setItem("followedUsers", JSON.stringify(followedUsers));
-
-                        // Cambiar el icono visualmente a un "tic"
-                        button.html('<i class="fas fa-check"></i>');
-                        button.removeClass('btn-outline-primary').addClass('btn-success');
-
-                        // Enviar el formulario para registrar el seguimiento en la base de datos
-                        button.closest("form").submit(); // Esto envía el formulario
-                    }
-                });
-            }
-        });
-
-        // Marcar los usuarios seguidos desde el localStorage al cargar
-        let followedUsers = JSON.parse(localStorage.getItem("followedUsers")) || [];
-        followedUsers.forEach(function(userId) {
-            $(".follow-btn[data-id='" + userId + "']").each(function() {
-                $(this).html('<i class="fas fa-check"></i>');
-                $(this).removeClass('btn-outline-primary').addClass('btn-success');
+            // Confirmación para seguir
+            Swal.fire({
+                title: '¿Quieres seguir a este usuario?',
+                text: `Estás a punto de seguir a ${userName}.`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, seguir',
+                cancelButtonText: 'No, cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Enviar el formulario para registrar el seguimiento en la base de datos
+                    button.closest("form").submit();
+                }
             });
         });
     });
