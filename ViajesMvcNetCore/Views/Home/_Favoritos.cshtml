@@ -3,41 +3,47 @@
     string defaultImageUrl = "https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-rocas_23-2150800507.jpg";
 }
 
-<div class="row row-cols-1 row-cols-md-2 g-4" id="placesContainer">
-    @foreach (var lugar in Model)
-    {
-        <div class="col lugar-card">
-            <div class="card h-100 card-custom">
-                <div class="photo">
-                    <img src="@(string.IsNullOrEmpty(lugar.ImagenLugar) ? defaultImageUrl : lugar.ImagenLugar)"
-                         alt="@lugar.NombreLugar" class="card-img-top" onerror="this.src='@defaultImageUrl';" />
-                    <div class="photos">Photos</div>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title txt4">@lugar.NombreLugar</h5>
-                    <p class="card-text txt5">@lugar.UbicacionLugar</p>
-                    <p class="card-text txt2">@lugar.DescripcionLugar</p>
-                </div>
-                <div class="card-footer">
-                    <p>
-                        <a asp-controller="Lugares" asp-action="Details" asp-route-idlugar="@lugar.IdLugar" class="btn btn-outline-danger">Read More</a>
-                        <a id="heart-@lugar.IdLugar" class="heart-link red-heart" data-id="@lugar.IdLugar">
-                            <span class="like">
-                                <img src="https://icon-icons.com/icons2/3870/PNG/512/save_remove_icon_243831.png" alt="Delete" style="width: 30px; height: 30px;">
-                            </span>
+<div class="container py-5">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="placesContainer">
+        @foreach (var lugar in Model)
+        {
+            <div class="col">
+                <div class="card lugar-card shadow h-100">
+                    <div class="photo-container position-relative overflow-hidden">
+                        <img src="@(string.IsNullOrEmpty(lugar.ImagenLugar) ? defaultImageUrl : lugar.ImagenLugar)"
+                             alt="@lugar.NombreLugar" class="card-img-top" onerror="this.src='@defaultImageUrl';" />
+                        <div class="overlay-badge">
+                            <span class="badge bg-light text-dark"><i class="fas fa-camera me-1"></i> Photos</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@lugar.NombreLugar</h5>
+                        <p class="card-location"><i class="fas fa-map-marker-alt location-icon"></i> @lugar.UbicacionLugar</p>
+                        <p class="card-description">@lugar.DescripcionLugar</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center bg-white">
+                        <a asp-controller="Lugares" asp-action="Details" asp-route-idlugar="@lugar.IdLugar" class="btn btn-primary btn-sm">Read More</a>
+                        <a id="heart-@lugar.IdLugar" class="heart-link" data-id="@lugar.IdLugar">
+                            <img src="https://icon-icons.com/icons2/3870/PNG/512/save_remove_icon_243831.png" alt="Delete" class="heart-icon" />
                         </a>
-                    </p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <p class="txt3 mb-0"><i class="far fa-clock"></i>@lugar.FechaDeVisitaLugar</p>
+                    </div>
+                    <div class="date-badge">
+                        <small><i class="far fa-calendar-alt me-1"></i> @lugar.FechaDeVisitaLugar</small>
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
 
+
+<!-- SweetAlert2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.27/dist/sweetalert2.min.css" rel="stylesheet">
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.27/dist/sweetalert2.min.js"></script>
+
 <script>
-            $(document).ready(function() {
+    $(document).ready(function() {
         $('.heart-link').click(function(e) {
             e.preventDefault();
 
@@ -46,130 +52,159 @@
 
             if (confirm('¿Estás seguro de que deseas eliminar de favoritos?')) {
                 $.post('/Home/DeleteFavorito', { idLugar: idLugar }, function () {
-                    card.remove(); // Elimina la tarjeta del DOM
+                    card.fadeOut(300, function() {
+                        $(this).remove(); // Elimina la tarjeta con animación
+                    });
                 }).fail(function() {
                     alert('Error al eliminar el favorito.');
                 });
             }
         });
-
     });
-
 </script>
 
-
 <style>
-    /* Estilos para las tarjetas de lugares */
-    .card-custom {
-        transition: all 0.3s ease;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        width: 100%;
-    }
+:root {
+    --primary-color: #4a6fa5;
+    --secondary-color: #6c8fb8;
+    --accent-color: #ff6b6b;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --light-bg: #f8f9fa;
+    --card-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    --hover-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    --transition-speed: 0.3s;
+}
 
-        .card-custom:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-        }
+body {
+    background-color: var(--light-bg);
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
 
-    .photo {
-        position: relative;
-        overflow: hidden;
-    }
+.container {
+    max-width: 1200px;
+}
 
-    .card-img-top {
-        height: 250px;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-        width: 100%;
-    }
+/* Card Styles */
+.lugar-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all var(--transition-speed) ease;
+}
 
-    .card-custom:hover .card-img-top {
-        transform: scale(1.05);
-    }
+.lugar-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--hover-shadow);
+}
 
-    .photos {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        background-color: rgba(0, 0, 0, 0.6);
-        color: white;
-        padding: 5px 10px;
-        border-radius: 4px;
-        font-size: 0.8rem;
-    }
+.photo-container {
+    height: 200px;
+}
 
-    .card-title.txt4 {
-        font-weight: bold;
-        font-size: 1.4rem;
-        margin-bottom: 8px;
-        color: #333;
-    }
+.card-img-top {
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
 
-    .card-text.txt5 {
-        color: #666;
-        font-style: italic;
-        font-size: 1rem;
-        margin-bottom: 12px;
-    }
+.lugar-card:hover .card-img-top {
+    transform: scale(1.05);
+}
 
-    .card-text.txt2 {
-        font-size: 1rem;
-        color: #555;
-        line-height: 1.6;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
+.overlay-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 2;
+}
 
-    .card-footer {
-        background-color: #f8f9fa;
-        border-top: 1px solid rgba(0,0,0,0.1);
-        padding: 1.2rem;
-    }
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
-    .btn-outline-danger {
-        border-radius: 5px;
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-        transition: all 0.3s;
-    }
+.card-body {
+    padding: 1.5rem;
+}
 
-    .heart-link {
-        float: right;
-        cursor: pointer;
-        color: #333;
-        transition: all 0.3s;
-        margin-top: 3px;
-    }
+.card-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
 
-    .heart-icon {
-        font-size: 1.2rem;
-        margin-right: 5px;
-    }
+.card-location {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
 
-    .red-heart {
-        color: #ff0000 !important;
-    }
+.location-icon {
+    color: var(--accent-color);
+    margin-right: 5px;
+}
 
-    .txt3 {
-        color: #777;
-        font-size: 0.9rem;
-        margin-bottom: 0;
-    }
+.card-description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
 
-        .txt3 i {
-            margin-right: 5px;
-        }
+.card-footer {
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding: 1rem 1.5rem;
+}
 
-    .comments {
-        float: right;
-        color: #666;
-    }
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    border-radius: 30px;
+    padding: 6px 16px;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+}
 
-        .comments i {
-            margin-right: 5px;
-        }
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+.heart-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-speed) ease;
+}
+
+.heart-link:hover {
+    transform: scale(1.1);
+}
+
+.heart-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.date-badge {
+    position: absolute;
+    bottom: 75px;
+    right: 15px;
+    background-color: rgba(255,255,255,0.9);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
 </style>

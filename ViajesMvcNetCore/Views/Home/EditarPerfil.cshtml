@@ -1,177 +1,298 @@
 ﻿@model UsuarioCompletoViewModel
 @{
     ViewData["Title"] = "Editar Perfil";
+    string defaultAvatarUrl = "/images/default-avatar.png";
 }
 
 <style>
+    :root {
+        --primary-color: #2c6e49;
+        --secondary-color: #4d908e;
+        --text-color: #333;
+        --light-bg: #f8f9fa;
+        --border-radius: 10px;
+        --box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
     body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f8f9fa;
-        color: #343a40;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        color: var(--text-color);
+        line-height: 1.6;
     }
 
     .container {
-        max-width: 800px;
-        margin-top: 10px;
+        max-width: 1000px;
+        padding: 20px;
     }
 
-    h1 {
-        font-size: 2.5rem;
-        color: #004C97;
+    .profile-card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+        margin-bottom: 30px;
     }
 
-    .form-control, .form-select {
-        border-radius: 25px;
+    .profile-header {
+        position: relative;
+        padding: 25px;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        color: white;
+        text-align: center;
     }
 
-    .btn-primary {
-        background-color: #004C97;
-        border-color: #004C97;
-        font-weight: 500;
-        border-radius: 25px;
-    }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004C97;
+        .profile-header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2.2rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
         }
 
-    .btn-outline-primary {
-        border-color: #004C97;
-        color: #004C97;
-        font-weight: 500;
-        border-radius: 25px;
-    }
-
-        .btn-outline-primary:hover {
-            background-color: #004C97;
-            color: white;
-        }
-
-    .form-group {
-        margin-bottom: 1rem;
+    .profile-content {
+        padding: 25px;
     }
 
     .btn-back {
-        margin-top: 10px;
-        margin-bottom: 5px;
+        color: white;
+        background-color: rgba(255, 255, 255, 0.2);
+        border: 2px solid white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        transition: all 0.3s;
+        font-size: 1.2rem;
+        text-decoration: none;
     }
 
-    .input-group-text {
-        border-radius: 0 25px 25px 0;
+        .btn-back:hover {
+            background-color: white;
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+    .form-label {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 1rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: var(--border-radius);
+        border: 1px solid #ced4da;
+        padding: 10px 15px;
+        transition: all 0.3s;
+        font-size: 0.95rem;
+    }
+
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 0.2rem rgba(44, 110, 73, 0.25);
+            border-color: var(--primary-color);
+        }
+
+    .btn-submit {
+        background-color: var(--primary-color);
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+    }
+
+        .btn-submit:hover {
+            background-color: #245a3c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+    .avatar-preview-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
     }
 
     .avatar-preview {
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        object-fit: cover;
+        border: 4px solid white;
+        margin-bottom: 10px;
+        transition: all 0.3s;
+    }
+
+        .avatar-preview:hover {
+            transform: scale(1.05);
+        }
+
+    .avatar-color-preview {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-top: 10px;
+        background-color: @Model.ColorAvatar;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        top: 38px;
+        color: var(--secondary-color);
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+        border-radius: var(--border-radius);
+        padding: 12px 20px;
+        margin-bottom: 20px;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: block;
     }
 </style>
 
 <div class="container">
-    <div class="mb-2">
-        <a asp-action="Perfil" asp-route-id="@Model.IdUsuario" class="btn btn-outline-primary btn-lg btn-back">
-            ←
-        </a>
-    </div>
-
-    <h1>Editar mi Perfil</h1>
-
-    @if (ViewBag.Error != null)
-    {
-        <div class="alert alert-danger" style="border-radius: 15px;">
-            @ViewBag.Error
+    <div class="profile-card">
+        <div class="profile-header">
+            <a asp-action="Perfil" asp-route-id="@Model.IdUsuario" class="btn-back">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1>Editar mi Perfil</h1>
         </div>
-    }
 
-    <form method="post" asp-action="EditarPerfil" class="needs-validation" novalidate>
-        <input type="hidden" asp-for="IdUsuario" />
-        <input type="hidden" id="HiddenColorAvatar" name="ColorAvatar" value="@Model.ColorAvatar" />
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label asp-for="Nombre" class="h5">Nombre</label>
-                    <input asp-for="Nombre" class="form-control" placeholder="Tu nombre" />
-                    <span asp-validation-for="Nombre" class="text-danger"></span>
+        <div class="profile-content">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    @ViewBag.Error
                 </div>
+            }
 
-                <div class="form-group">
-                    <label asp-for="CorreoLogin" class="h5">Correo electrónico</label>
-                    <input asp-for="CorreoLogin" class="form-control" type="email" placeholder="ejemplo@correo.com" />
-                    <span asp-validation-for="CorreoLogin" class="text-danger"></span>
-                </div>
+            <form method="post" asp-action="EditarPerfil" class="needs-validation" novalidate>
+                <input type="hidden" asp-for="IdUsuario" />
+                <input type="hidden" id="HiddenColorAvatar" name="ColorAvatar" value="@Model.ColorAvatar" />
 
-                <div class="form-group">
-                    <label asp-for="Clave" class="h5">Contraseña</label>
-                    <input asp-for="Clave" class="form-control" type="password" placeholder="Contraseña" />
-                    <span asp-validation-for="Clave" class="text-danger"></span>
-                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="avatar-preview-container">
+                            <img id="preview-avatar" src="@(string.IsNullOrEmpty(Model.AvatarUrl) ? defaultAvatarUrl : Model.AvatarUrl)"
+                                 alt="Avatar Preview" class="avatar-preview"
+                                 onerror="this.src='@defaultAvatarUrl'">
 
-                <div class="form-group">
-                    <label asp-for="ConfirmarClave" class="h5">Confirmar Contraseña</label>
-                    <input asp-for="ConfirmarClave" class="form-control" type="password" placeholder="Confirma tu contraseña" />
-                    <span asp-validation-for="ConfirmarClave" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label asp-for="PreferenciaViaje" class="h5">Preferencia de Viaje</label>
-                    <select asp-for="PreferenciaViaje" class="form-select">
-                        <option value="">Selecciona tu preferencia...</option>
-                        <option value="Turístico">Turístico</option>
-                        <option value="Restaurante">Restaurante</option>
-                        <option value="Deporte">Deporte</option>
-                        <option value="Cultura">Cultura</option>
-                        <option value="Naturaleza">Naturaleza</option>
-                        <option value="Comercial">Comercial</option>
-                        <option value="Educativo">Educativo</option>
-                        <option value="Religioso">Religioso</option>
-                        <option value="Salud">Salud</option>
-                        <option value="Empresarial">Empresarial</option>
-                        <option value="Transporte">Transporte</option>
-                        <option value="Entretenimiento">Entretenimiento</option>
-                        <option value="Aventura">Aventura</option>
-                        <option value="Residencial">Residencial</option>
-                        <option value="Cívico">Cívico</option>
-                    </select>
-                    <span asp-validation-for="PreferenciaViaje" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="AvatarUrl" class="h5">URL de Avatar</label>
-                    <div class="input-group">
-                        <input asp-for="AvatarUrl" class="form-control" placeholder="URL de imagen para avatar" />
-                        <span class="input-group-text p-0">
-                            <img id="preview-avatar" src="@Model.AvatarUrl" alt="Avatar Preview"
-                                 class="rounded-circle" style="width: 40px; height: 40px;"
-                                 onerror="this.src='/images/default-avatar.png'">
-                        </span>
+                            <div class="avatar-color-preview"></div>
+                        </div>
                     </div>
-                    <span asp-validation-for="AvatarUrl" class="text-danger"></span>
-                </div>
 
-                <div class="form-group">
-                    <input asp-for="ColorAvatar" class="form-control" type="color" readonly disabled />
-                    <span asp-validation-for="ColorAvatar" class="text-danger" disabled></span>
-                </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Nombre" class="form-label">Nombre</label>
+                                    <input asp-for="Nombre" class="form-control" placeholder="Tu nombre" />
+                                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                                </div>
 
-                <div class="form-group">
-                    <label asp-for="Edad" class="h5">Edad</label>
-                    <input asp-for="Edad" class="form-control" type="number" placeholder="Tu edad" />
-                    <span asp-validation-for="Edad" class="text-danger"></span>
-                </div>
+                                <div class="form-group">
+                                    <label asp-for="CorreoLogin" class="form-label">Correo electrónico</label>
+                                    <input asp-for="CorreoLogin" class="form-control" type="email" placeholder="ejemplo@correo.com" />
+                                    <span asp-validation-for="CorreoLogin" class="text-danger"></span>
+                                </div>
 
-                <div class="form-group">
-                    <label asp-for="Nacionalidad" class="h5">Nacionalidad</label>
-                    <input asp-for="Nacionalidad" class="form-control" placeholder="Tu nacionalidad" />
-                    <span asp-validation-for="Nacionalidad" class="text-danger"></span>
+                                <div class="form-group">
+                                    <label asp-for="Clave" class="form-label">Contraseña</label>
+                                    <input asp-for="Clave" class="form-control" type="password" placeholder="Contraseña" />
+                                    <span asp-validation-for="Clave" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="ConfirmarClave" class="form-label">Confirmar Contraseña</label>
+                                    <input asp-for="ConfirmarClave" class="form-control" type="password" placeholder="Confirma tu contraseña" />
+                                    <span asp-validation-for="ConfirmarClave" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="PreferenciaViaje" class="form-label">Preferencia de Viaje</label>
+                                    <select asp-for="PreferenciaViaje" class="form-select">
+                                        <option value="">Selecciona tu preferencia...</option>
+                                        <option value="Turístico">Turístico</option>
+                                        <option value="Restaurante">Restaurante</option>
+                                        <option value="Deporte">Deporte</option>
+                                        <option value="Cultura">Cultura</option>
+                                        <option value="Naturaleza">Naturaleza</option>
+                                        <option value="Comercial">Comercial</option>
+                                        <option value="Educativo">Educativo</option>
+                                        <option value="Religioso">Religioso</option>
+                                        <option value="Salud">Salud</option>
+                                        <option value="Empresarial">Empresarial</option>
+                                        <option value="Transporte">Transporte</option>
+                                        <option value="Entretenimiento">Entretenimiento</option>
+                                        <option value="Aventura">Aventura</option>
+                                        <option value="Residencial">Residencial</option>
+                                        <option value="Cívico">Cívico</option>
+                                    </select>
+                                    <span asp-validation-for="PreferenciaViaje" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="AvatarUrl" class="form-label">URL de Avatar</label>
+                                    <input asp-for="AvatarUrl" class="form-control" placeholder="URL de imagen para avatar" />
+                                    <span asp-validation-for="AvatarUrl" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Edad" class="form-label">Edad</label>
+                                    <input asp-for="Edad" class="form-control" type="number" placeholder="Tu edad" />
+                                    <span asp-validation-for="Edad" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Nacionalidad" class="form-label">Nacionalidad</label>
+                                    <input asp-for="Nacionalidad" class="form-control" placeholder="Tu nacionalidad" />
+                                    <span asp-validation-for="Nacionalidad" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-save me-2"></i> Guardar cambios
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
-
-        <button type="submit" class="btn btn-outline-primary btn-lg btn-back">Guardar cambios</button>
-    </form>
+    </div>
 </div>
 
 @section Scripts {
