@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MvcNetCoreUtilidades.Helpers;
 using ViajesMvcNetCore.Data;
 using ViajesMvcNetCore.Repositories;
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<RepositoryHome>();
 builder.Services.AddTransient<RepositoryLugar>();
 builder.Services.AddTransient<RepositoryUsuarios>();
+builder.Services.AddSingleton<HelperPathProvider>();
 
 builder.Services.AddSession(options =>
 {
@@ -36,7 +38,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthorization();
-
+app.UseStaticFiles();
 app.MapStaticAssets();
 app.UseSession();
 

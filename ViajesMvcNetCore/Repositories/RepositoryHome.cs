@@ -25,7 +25,7 @@ namespace ViajesMvcNetCore.Repositories
 
 
             return lugares;
-        }   
+        }
 
         public async Task UpdateLugarAsync(int idLugar, string nombre, string descripcion, string ubicacion, string categoria, DateTime horario, string imagen, string tipo)
         {

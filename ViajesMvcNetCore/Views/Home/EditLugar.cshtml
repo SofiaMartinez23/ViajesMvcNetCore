@@ -1,36 +1,35 @@
 ﻿@model ViajesMvcNetCore.Models.Lugar
 
+<div class="container">
+    <div class="mb-2">
+        <a href="/Home/Perfil?id=@(Context.Session.GetInt32("IdUsuario"))" class="btn btn-outline-primary btn-lg btn-back">
+            ←
+        </a>
+    </div>
 
-    <div class="container">
-        <div class="mb-2">
-            <a href="/Home/Perfil?id=@(Context.Session.GetInt32("IdUsuario"))" class="btn btn-outline-primary btn-lg btn-back">
-                ←
-            </a>
-        </div>
+    <h1>Editar Lugar</h1>
 
-        <h1>Editar Lugar</h1>
+    <form id="editForm" asp-action="EditLugar" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="IdLugar" />
 
-        <form id="editForm" asp-action="EditLugar" method="post">
-            <input type="hidden" asp-for="IdLugar" />
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="Nombre" class="h5">Nombre del Lugar</label>
-                        <input asp-for="Nombre" class="form-control" placeholder="Nombre del lugar" required>
-                        <span asp-validation-for="Nombre" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="Ubicacion" class="h5">Ubicación</label>
-                        <input asp-for="Ubicacion" class="form-control" placeholder="Ubicación del lugar" required>
-                        <span asp-validation-for="Ubicacion" class="text-danger"></span>
-                    </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Nombre" class="h5">Nombre del Lugar</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Nombre del lugar" required>
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Ubicacion" class="h5">Ubicación</label>
+                    <input asp-for="Ubicacion" class="form-control" placeholder="Ubicación del lugar" required>
+                    <span asp-validation-for="Ubicacion" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
 
-            <div class="row">
+        <div class="row">
             <div class="form-group">
                 <label asp-for="Categoria" class="h5">Categoría</label>
                 <select asp-for="Categoria" class="form-select form-select-lg" required>
@@ -54,46 +53,54 @@
                 <span asp-validation-for="Categoria" class="text-danger"></span>
             </div>
 
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="Horario" class="h5">Horario</label>
-                        <input asp-for="Horario" type="datetime-local" class="form-control" required>
-                        <span asp-validation-for="Horario" class="text-danger"></span>
-                    </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Horario" class="h5">Horario</label>
+                    <input asp-for="Horario" type="datetime-local" class="form-control" required>
+                    <span asp-validation-for="Horario" class="text-danger"></span>
                 </div>
             </div>
+        </div>
 
-            <div class="form-group">
-                <label asp-for="Descripcion" class="h5">Descripción</label>
-                <textarea asp-for="Descripcion" class="form-control" placeholder="Descripción del lugar" rows="4" required></textarea>
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
+        <div class="form-group">
+            <label asp-for="Descripcion" class="h5">Descripción</label>
+            <textarea asp-for="Descripcion" class="form-control" placeholder="Descripción del lugar" rows="4" required></textarea>
+            <span asp-validation-for="Descripcion" class="text-danger"></span>
+        </div>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="Tipo" class="h5">Tipo</label>
-                        <select asp-for="Tipo" class="form-control" required>
-                            <option value="Público">Público</option>
-                            <option value="Privado">Privado</option>
-                        </select>
-                        <span asp-validation-for="Tipo" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="Imagen" class="h5">URL Imagen</label>
-                        <input asp-for="Imagen" class="form-control" placeholder="URL de la imagen del lugar" required>
-                        <span asp-validation-for="Imagen" class="text-danger"></span>
-                    </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Tipo" class="h5">Tipo</label>
+                    <select asp-for="Tipo" class="form-control" required>
+                        <option value="Publico">Publico</option>
+                        <option value="Privado">Privado</option>
+                    </select>
+                    <span asp-validation-for="Tipo" class="text-danger"></span>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Seleccione un fichero</label>
+                    <input type="file" name="fichero" class="form-control" placeholder="@Model.Imagen" required />
+                </div>
+            </div>
+        </div>
 
-            <button class="btn btn-outline-primary btn-lg btn-back">Guardar Cambios</button>
-        </form>
-    </div>
+        <button class="btn btn-outline-primary btn-lg btn-back">Guardar Cambios</button>
+    </form>
 
-   
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#editForm').submit(function () {
+            // No necesitas hacer nada aquí, el formulario se enviará normalmente
+        });
+    });
+</script>
 <style>
     body {
         font-family: 'Arial', sans-serif;

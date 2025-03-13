@@ -6,6 +6,7 @@ using ViajesMvcNetCore.Models;
 using ViajesMvcNetCore.Data;
 using Microsoft.Data.SqlClient;
 using ViajesMvcNetCore.Repositories;
+using MvcNetCoreUtilidades.Helpers;
 
 namespace AvatarDinamicoPersonalizado.Controllers
 {
@@ -13,11 +14,13 @@ namespace AvatarDinamicoPersonalizado.Controllers
     {
         private readonly ViajesContext context;
         private readonly RepositoryHome repo;
+        private readonly HelperPathProvider helperPath;
 
-        public HomeController(ViajesContext context, RepositoryHome repo)
+        public HomeController(ViajesContext context, RepositoryHome repo, HelperPathProvider helperPath)
         {
             this.context = context;
             this.repo = repo;
+            this.helperPath = helperPath;
         }
 
         public IActionResult Index()
@@ -250,10 +253,23 @@ namespace AvatarDinamicoPersonalizado.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditLugar(Lugar lugar)
-        {      
-            await repo.UpdateLugarAsync(lugar.IdLugar, lugar.Nombre, 
-                lugar.Descripcion, lugar.Ubicacion, lugar.Categoria, 
+        public async Task<IActionResult> EditLugar(Lugar lugar, IFormFile fichero)
+        {
+            if (fichero != null && fichero.Length > 0)
+            {
+                string fileName = fichero.FileName;
+                string path = this.helperPath.MapPath(fileName, Folders.Uploads);
+                string urlPath = this.helperPath.MapUrlPath(fileName, Folders.Uploads);
+
+                using (Stream stream = new FileStream(path, FileMode.Create))
+                {
+                    await fichero.CopyToAsync(stream);
+                }
+
+                lugar.Imagen = urlPath;
+            }
+            await repo.UpdateLugarAsync(lugar.IdLugar, lugar.Nombre,
+                lugar.Descripcion, lugar.Ubicacion, lugar.Categoria,
                 lugar.Horario, lugar.Imagen, lugar.Tipo);
 
             if (HttpContext.Session.GetInt32("IdUsuario") != null)
@@ -262,7 +278,7 @@ namespace AvatarDinamicoPersonalizado.Controllers
             }
             else
             {
-                return RedirectToAction("Login", "Home"); 
+                return RedirectToAction("Login", "Home");
             }
         }
 
