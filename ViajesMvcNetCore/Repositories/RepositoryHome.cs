@@ -96,10 +96,9 @@ namespace ViajesMvcNetCore.Repositories
         }
         public async Task<List<UsuarioSeguidoPerfil>> GetSeguidoresUsuarioAsync(int idusuario)
         {
-            var user = new List<UsuarioSeguidoPerfil>();
             string sql = "EXEC SP_SEGUIDORES_BY_USUARIO @idusuario";
 
-            user = await this.context.UsuarioSeguidoPerfiles
+            List<UsuarioSeguidoPerfil>  user = await this.context.UsuarioSeguidoPerfiles
                 .FromSqlRaw(sql, new SqlParameter("@idusuario", idusuario))
                 .ToListAsync();
 

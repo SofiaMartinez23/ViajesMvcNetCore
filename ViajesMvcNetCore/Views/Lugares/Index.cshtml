@@ -43,7 +43,7 @@
                                 <a asp-controller="Lugares" asp-action="Details" asp-route-idlugar="@lugar.IdLugar" class="btn btn-outline-danger">Read More</a>
                                 <a id="heart-@lugar.IdLugar" class="btn btn-outline-light heart-button" data-idlugar="@lugar.IdLugar">
                                     <span class="like">
-                                        <img src="https://img.icons8.com/?size=24&id=84034&format=png" alt="Guardar" style="width: 24px; height: 24px;">
+                                        <img src="https://icon-icons.com/icons2/3863/PNG/512/save_icon_241135.png" alt="Guardar" style="width: 24px; height: 24px;">
                                     </span>
                                 </a>
 
@@ -82,7 +82,7 @@
                                 <a asp-controller="Lugares" asp-action="Details" asp-route-idlugar="@lugar.IdLugar" class="btn btn-outline-danger">Read More</a>
                                 <a id="heart-@lugar.IdLugar" class="btn btn-outline-light heart-button" data-idlugar="@lugar.IdLugar">
                                     <span class="like">
-                                        <img src="https://img.icons8.com/?size=24&id=84034&format=png" alt="Guardar" style="width: 24px; height: 24px;">
+                                        <img src="https://icon-icons.com/icons2/3863/PNG/512/save_icon_241135.png" alt="Guardar" style="width: 24px; height: 24px;">
                                     </span>
                                 </a>
 
@@ -126,7 +126,7 @@
         });
     }
 
-    $(document).ready(function() {
+     $(document).ready(function() {
         // Toggle público y privado
         $('#togglePublicPlaces').click(function() {
             $('#publicPlacesContainer').slideToggle();
@@ -141,20 +141,21 @@
             $(this).find('h2').text(sectionName);
             $('#privatePlacesArrow').toggleClass('fa-chevron-down fa-chevron-up');
         });
-        
-    });
-        $(document).ready(function() {
+
+        // Manejar el evento click en el botón de corazón para agregar a favoritos
         $('.heart-button').click(function() {
-            var lugarId = $(this).data('idlugar');  
+            var lugarId = $(this).data('idlugar');
 
             $.ajax({
-                url: '/Lugares/AddFavorito',  
+                url: '/Lugares/AddFavorito',
                 type: 'POST',
                 data: { idLugar: lugarId },
                 success: function(response) {
                     if (response.success) {
+                        // Cambio la imagen del corazón a la imagen de lugar guardado
+                        $('#heart-' + lugarId + ' img').attr('src', 'https://icon-icons.com/icons2/3873/PNG/512/save_icon_244742.png');
+                        $('#heart-' + lugarId + ' img').css('filter', 'none'); // Aseguramos que la imagen no tenga filtro
                         alert('Lugar guardado como favorito!');
-                        $('#heart-' + lugarId + ' img').css('filter', 'grayscale(0%)');
                     } else {
                         alert('Este lugar ya está en tus favoritos.');
                     }

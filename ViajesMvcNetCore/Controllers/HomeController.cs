@@ -356,7 +356,7 @@ namespace AvatarDinamicoPersonalizado.Controllers
 
             await this.repo.DeleteSeguidorAsync(idSeguidor.Value, idSeguido);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("_Seguidos");
         }
 
 

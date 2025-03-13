@@ -8,6 +8,9 @@ namespace ViajesMvcNetCore.Models
     public class UsuarioSeguidoPerfil
     {
         [Key]
+        [Column("ID_SEGUIDOR")]
+        public int IdSeguidor { get; set; }
+
         [Column("ID_USUARIO_SEGUIDOR")]
         public int IdUsuarioSeguidor { get; set; }
 
