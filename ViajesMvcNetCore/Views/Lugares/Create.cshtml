@@ -65,13 +65,14 @@
     <div class="container">
         <div class="mb-2">
             <a asp-controller="Lugares" asp-action="Index" class="btn btn-outline-primary btn-lg btn-back">
-                ←
+                ← Volver
             </a>
         </div>
 
         <h1>Crear Nuevo Lugar</h1>
 
-        <form method="post" action="/Lugares/Create">
+        <!-- Formulario para crear un nuevo lugar -->
+        <form method="post" action="/Lugares/Create" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -135,10 +136,13 @@
                         </select>
                     </div>
                 </div>
+            </div>
+
+            <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="imagen" class="h5">URL Imagen</label>
-                        <input type="text" class="form-control" id="imagen" name="Imagen" placeholder="URL de la imagen del lugar" required>
+                        <label for="imagen" class="h5">Seleccionar Imagen</label>
+                        <input type="file" class="form-control" id="imagen" name="fichero" required />
                     </div>
                 </div>
             </div>

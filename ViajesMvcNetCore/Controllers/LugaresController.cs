@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using ViajesMvcNetCore.Data;
+using MvcNetCoreUtilidades.Helpers;
 
 namespace ViajesMvcNetCore.Controllers
 {
@@ -13,12 +14,15 @@ namespace ViajesMvcNetCore.Controllers
     {
         private RepositoryLugar repo;
         private readonly ViajesContext context;
+        private readonly HelperPathProvider helperPath;
 
 
-        public LugaresController(ViajesContext context, RepositoryLugar repo)
+
+        public LugaresController(ViajesContext context, RepositoryLugar repo, HelperPathProvider helperPath)
         {
             this.context = context;
             this.repo = repo;
+            this.helperPath = helperPath;
         }
 
         public async Task<IActionResult> Index(string tipo)
@@ -67,8 +71,9 @@ namespace ViajesMvcNetCore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(string nombre, string descripcion, string ubicacion, string categoria, DateTime horario, string imagen, string tipo)
+        public async Task<IActionResult> Create(string nombre, string descripcion, string ubicacion, string categoria, DateTime horario, string tipo, IFormFile fichero)
         {
+            // Comprobar si el usuario está autenticado
             var idUsuario = HttpContext.Session.GetInt32("IdUsuario");
 
             if (!idUsuario.HasValue)
@@ -76,10 +81,36 @@ namespace ViajesMvcNetCore.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            await this.repo.InsertLugarAsync(nombre, descripcion, ubicacion, categoria, horario, imagen, tipo, idUsuario.Value);
+            // Crear variable para almacenar la URL de la imagen
+            string imagenUrl = null;
 
+            // Si se ha subido un archivo, proceder con la carga de la imagen
+            if (fichero != null && fichero.Length > 0)
+            {
+                // Nombre del archivo
+                string fileName = fichero.FileName;
+
+                // Ruta donde se almacenará el archivo (en el servidor)
+                string path = this.helperPath.MapPath(fileName, Folders.Uploads);
+
+                // URL para acceder al archivo una vez cargado (en el navegador)
+                imagenUrl = this.helperPath.MapUrlPath(fileName, Folders.Uploads);
+
+                // Guardar el archivo en el servidor
+                using (Stream stream = new FileStream(path, FileMode.Create))
+                {
+                    await fichero.CopyToAsync(stream);
+                }
+            }
+
+            // Insertar el lugar en la base de datos
+            await this.repo.InsertLugarAsync(nombre, descripcion, ubicacion, categoria, horario, imagenUrl, tipo, idUsuario.Value);
+
+            // Redirigir al usuario a la vista de lista de lugares (Index)
             return RedirectToAction("Index");
         }
+
+
 
 
         public async Task<IActionResult> Comentarios(int id)
