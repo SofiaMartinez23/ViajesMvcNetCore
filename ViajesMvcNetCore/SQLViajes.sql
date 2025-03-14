@@ -517,79 +517,47 @@ GO
 
 
 ---------------------------------------------------------INSERT-------------------------------------------------
--- Insertar datos de ejemplo en USUARIOS
+
+
 INSERT INTO USUARIOS (ID_USUARIO, NOMBRE, EMAIL, EDAD, NACIONALIDAD, PREFERENCIASDEVIAJE, IMAGEN, FECHADEREGISTRO)
-VALUES
-(1, N'Juan Pérez', N'juan.perez@email.com', 28, N'México', N'Aventura, Historia', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg', '2024-11-23'),
-(2, N'María García', N'maria.garcia@email.com', 35, N'España', N'Cultura, Relax', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg', '2024-11-23'),
-(3, N'Pedro Sánchez', N'pedro.sanchez@email.com', 22, N'Argentina', N'Playa, Relax', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg', '2025-02-06'),
-(4, N'Luisa Fernández', N'luisa.fernandez@email.com', 40, N'Colombia', N'Naturaleza, Gastronomía', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg', '2025-01-15'),
-(5, N'Carlos Rodríguez', N'carlos.rodriguez@email.com', 31, N'Chile', N'Montaña, Aventura', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg', '2024-12-20');
-
--- Insertar datos de ejemplo en LOG_IN, asegurando que ID_USUARIO coincida
-INSERT INTO LOG_IN (ID_USUARIO, CORREO, CLAVE)
-VALUES
-(1, 'juan.perez@email.com', 'a'),
-(2, 'maria.garcia@email.com', 'a1'),
-(3, 'pedro.sanchez@email.com', 'a2'),
-(4, 'luisa.fernandez@email.com', 'a3'),
-(5, 'carlos.rodriguez@email.com', 'a4');
-
--- Insertar datos de ejemplo en USUARIOLOGIN, asegurando que ID_USUARIO y CORREO coincidan
-INSERT INTO USUARIOLOGIN (ID_USUARIO, CORREO, NOMBRE, CLAVE, CONFIRMARCLAVE, PREFERENCIASDEVIAJE, ColorAvatar, AvatarUrl)
-VALUES
-(1, N'juan.perez@email.com', N'Juan Pérez', N'contrasena1', N'contrasena1', N'Aventura, Historia', N'#FF0000', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg'),
-(2, N'maria.garcia@email.com', N'María García', N'contrasena2', N'contrasena2', N'Cultura, Relax', N'#00FF00', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg'),
-(3, N'pedro.sanchez@email.com', N'Pedro Sánchez', N'contrasena3', N'contrasena3', N'Playa, Relax', N'#0000FF', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg'),
-(4, N'luisa.fernandez@email.com', N'Luisa Fernández', N'contrasena4', N'contrasena4', N'Naturaleza, Gastronomía', N'#FFFF00', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg'),
-(5, N'carlos.rodriguez@email.com', N'Carlos Rodríguez', N'contrasena5', N'contrasena5', N'Montaña, Aventura', N'#00FFFF', N'https://img.freepik.com/foto-gratis/angulo-bosque-3d-arboles-ro0cas_23-2150800507.jpg');
-
--- Insertar datos de ejemplo en LUGARES
-INSERT INTO LUGARES (ID_LUGAR, NOMBRE, DESCRIPCION, UBICACION, CATEGORIA, HORARIO, IMAGEN, TIPO, ID_USUARIO)
-VALUES
-(1, 'Central Park', 'Un gran parque urbano con lagos, senderos y jardines.', 'Nueva York, EE.UU.', 'Parque', '2024-01-01T06:00:00', 'central_park.jpg', 'Publico',1),
-(2, 'Museo del Louvre', 'Uno de los museos de arte más grandes y visitados del mundo.', 'París, Francia', 'Museo', '2024-01-01T09:00:00', 'louvre.jpg', 'Publico',1),
-(3, 'Playa de Copacabana', 'Una famosa playa con arena blanca y un paseo marítimo animado.', 'Río de Janeiro, Brasil', 'Playa', '2024-01-01T00:00:00', 'copacabana.jpg', 'Publico',2),
-(4, 'La Trattoria', 'Un restaurante italiano con auténtica cocina casera.', 'Roma, Italia', 'Restaurante', '2024-01-01T12:00:00', 'trattoria.jpg', 'Privado',3),
-(5, 'La Gran Muralla China', 'Una serie de fortificaciones construidas a lo largo de las fronteras históricas del norte de China.', 'China', 'Monumento', '2024-01-01T08:00:00', 'gran_muralla.jpg', 'Publico',4);
--- Ejemplo 1: Un parque famoso
-
--- Insertar datos de ejemplo en LUGARESFAVORITOS
-INSERT INTO LUGARESFAVORITOS (ID_FAVORITO,ID_USUARIO, ID_LUGAR, FECHADEVISITA_LUGAR, IMAGEN_LUGAR, NOMBRE_LUGAR, DESCRIPCION_LUGAR, UBICACION_LUGAR, TIPO_LUGAR)
 VALUES 
-(1, 1, 1, '2025-03-10', N'https://ejemplo.com/paris.jpg', N'París', N'Capital de Francia, famosa por su cultura.', N'Francia', N'Ciudad'),
-(2, 1, 3, '2025-04-15', N'https://ejemplo.com/beijing.jpg', N'Beijing', N'Capital de China, famosa por su historia antigua.', N'China', N'Ciudad'),
-(3, 1, 2, '2024-12-05', N'https://ejemplo.com/madrid.jpg', N'Madrid', N'Capital de España, conocida por su historia y cultura.', N'España', N'Ciudad'),
-(4, 1, 4, '2025-05-20', N'https://ejemplo.com/roma.jpg', N'Roma', N'Capital de Italia, conocida por su historia antigua y monumentos.', N'Italia', N'Ciudad'),
-(5, 1, 5, '2025-06-25', N'https://ejemplo.com/cancun.jpg', N'Cancún', N'Destino turístico famoso por sus playas de arena blanca y aguas cristalinas.', N'México', N'Playa');
+(1, 'Juan Pérez', 'juan.perez@example.com', 30, 'México', 'Playa, Aventura, Naturaleza', 'imagen1.jpg', '2025-03-14'),
+(2, 'Ana García', 'ana.garcia@example.com', 28, 'España', 'Cultura, Montañas, Historia', 'imagen2.jpg', '2025-03-15');
+
+INSERT INTO LOG_IN (ID_USUARIO, CORREO, CLAVE)
+VALUES 
+(1, 'juan.perez@example.com', 'clave123'),
+(2, 'ana.garcia@example.com', 'clave456');
+
+INSERT INTO USUARIOLOGIN (ID_USUARIO, CORREO, NOMBRE, CLAVE, CONFIRMARCLAVE, PREFERENCIASDEVIAJE, COLORAVATAR, AVATARURL)
+VALUES 
+(1, 'juan.perez@example.com', 'Juan Pérez', 'clave123', 'clave123', 'Playa, Aventura, Naturaleza', 'Azul', 'http://example.com/avatar1.jpg'),
+(2, 'ana.garcia@example.com', 'Ana García', 'clave456', 'clave456', 'Cultura, Montañas, Historia', 'Rojo', 'http://example.com/avatar2.jpg');
+
+
+INSERT INTO LUGARES (ID_LUGAR, NOMBRE, DESCRIPCION, UBICACION, CATEGORIA, HORARIO, IMAGEN, TIPO, ID_USUARIO)
+VALUES 
+(1, 'Playa del Carmen', 'Hermosa playa en la Riviera Maya.', 'Riviera Maya, México', 'Playa', 2025-03-15, 'playa1.jpg', 'Playa', 1),
+(2, 'Museo del Prado', 'Museo con una extensa colección de arte europeo.', 'Madrid, España', 'Cultura', 2025-03-16 , 'museo1.jpg', 'Cultura', 2);
+
+
+INSERT INTO SEGUIDORES (ID_SEGUIDOR, ID_USUARIO_SEGUIDOR, ID_USUARIO_SEGUIDO, FECHA_SEGUIMIENTO)
+VALUES 
+(1, 1, 2, 2025-03-14),
+(2, 2, 1, 2025-03-15);
+
+INSERT INTO LUGARESFAVORITOS (ID_FAVORITO, ID_USUARIO, ID_LUGAR, FECHADEVISITA_LUGAR, IMAGEN_LUGAR, NOMBRE_LUGAR, DESCRIPCION_LUGAR, UBICACION_LUGAR, TIPO_LUGAR)
+VALUES 
+(1, 1, 1, '2025-03-16', 'playa_favorita.jpg', 'Playa del Carmen', 'Hermosa playa en la Riviera Maya.', 'Riviera Maya, México', 'Playa'),
+(2, 2, 2, '2025-03-17', 'museo_favorito.jpg', 'Museo del Prado', 'Museo con una extensa colección de arte europeo.', 'Madrid, España', 'Cultura');
+
 
 INSERT INTO COMENTARIOS (ID_COMENTARIO, ID_LUGAR, ID_USUARIO, COMENTARIO, FECHA_COMENTARIO)
-VALUES
-(1, 1, 1, N'¡París es una ciudad increíble! Me encantó la Torre Eiffel.', GETDATE()),
-(2, 1, 2, N'Totalmente de acuerdo. La comida y el ambiente son maravillosos.', GETDATE()),
-(3, 1, 3, N'No puedo esperar a volver. Hay tanto que ver y hacer.', GETDATE()),
-(4, 2, 1, N'Madrid tiene una vibra única. El Museo del Prado es imprescindible.', GETDATE()),
-(5, 2, 2, N'Las tapas y la vida nocturna son geniales. ¡Definitivamente lo recomiendo!', GETDATE()),
-(6, 2, 3, N'Me encantó caminar por el Parque del Retiro. Una ciudad hermosa.', GETDATE()),
-(7, 5, 1, N'Cancún es el paraíso en la tierra. Las playas son espectaculares.', GETDATE()),
-(8, 5, 2, N'Los resorts todo incluido son increíbles. Perfecto para relajarse.', GETDATE()),
-(9, 5, 3, N'Me encantó bucear en los arrecifes. Una experiencia inolvidable.', GETDATE());
--- Insertar datos de ejemplo en CHAT
-INSERT INTO CHAT (ID_MENSAJE, ID_USUARIO_REMITENTE, ID_USUARIO_DESTINATARIO, MENSAJE, FECHA_ENVIO)
-VALUES
-(7, 1, 5, N'Hola María, ¿cómo estás?', GETDATE()),
-(1, 1, 2, N'Hola María, ¿cómo estás?', GETDATE()),
-(2, 2, 1, N'Hola Juan, estoy bien gracias. ¿Y tú?', GETDATE()),
-(3, 1, 3, N'Pedro, ¿has visitado algún lugar interesante últimamente?', GETDATE()),
-(4, 3, 1, N'Hola Juan, sí, fui a la Gran Muralla hace poco. ¡Increíble!', GETDATE()),
-(5, 4, 5, N'Carlos, ¿quieres ir a Cancún conmigo?', GETDATE()),
-(6, 5, 4, N'¡Claro que sí, Luisa! Me encantaría.', GETDATE());
+VALUES 
+(1, 1, 1, 'Una de las mejores playas que he visitado. Muy recomendada.', 2025-03-16),
+(2, 2, 2, 'El museo tiene una colección impresionante. Definitivamente vale la pena visitarlo.', 2025-03-17);
 
--- Insertar datos de ejemplo en SEGUIDORES
-INSERT INTO SEGUIDORES (ID_SEGUIDOR, ID_USUARIO_SEGUIDOR, ID_USUARIO_SEGUIDO, FECHA_SEGUIMIENTO)
-VALUES
-(1, 1, 2, GETDATE()), 
-(2, 1, 3, GETDATE()), 
-(3, 2, 4, GETDATE()), 
-(4, 3, 1, GETDATE()), 
-(5, 4, 5, GETDATE());
+INSERT INTO CHAT (ID_MENSAJE, ID_USUARIO_REMITENTE, ID_USUARIO_DESTINATARIO, MENSAJE, FECHA_ENVIO)
+VALUES 
+(1, 1, 2, '¡Hola Ana! ¿Cómo estás? Quiero saber más sobre tu viaje a Madrid.', 2025-03-16),
+(2, 2, 1, '¡Hola Juan! Todo bien, gracias. Te contaré más detalles pronto.', 2025-03-16 );
